@@ -16,7 +16,7 @@ namespace Scoreboard.API
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var dbContext = this.serviceProvider.GetRequiredService<IDemoContext>();
+            var dbContext = this.serviceProvider.GetRequiredService<IScoreboardContext>();
             if (webHostEnvironment.IsProduction())
             {
                 await dbContext.InitializeDatabase();

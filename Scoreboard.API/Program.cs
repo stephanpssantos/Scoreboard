@@ -11,7 +11,7 @@ namespace Scoreboard.API
             // Add services to the container.
             string endpointURI = builder.Configuration.GetSection("Cosmos")["EndpointUri"]!;
             string primaryKey = builder.Configuration["Cosmos:PrimaryKey"]!;
-            builder.Services.AddSingleton<IDemoContext>(s => new DemoContext(endpointURI, primaryKey));
+            builder.Services.AddSingleton<IScoreboardContext>(s => new ScoreboardContext(endpointURI, primaryKey));
             builder.Services.AddHostedService<DbInitializer>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
