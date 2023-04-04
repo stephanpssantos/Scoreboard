@@ -106,14 +106,80 @@ namespace Scoreboard.API.Controllers
             partyInfo.Resource.PartyHostCode = player.RejoinCode;
 
             ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
-                    .ReplaceItemAsync<PartyExtended>(partyInfo.Resource, id, new PartitionKey(id));
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id));
 
             Party updatedParty = updatedPartyExtended.Resource.ToParty();
             return this.Ok(updatedParty);
         }
 
-        // Rejoin Party
-        // New Player
+        // POST: api/party/newPlayer/[id]
+        [HttpPost("newPlayer/{id:length(5)}", Name = nameof(NewPlayer))]
+        [ProducesResponseType(200, Type = typeof(Party))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> NewPlayer([FromBody] PlayerExtended player, string id)
+        {
+            if (player == null ||
+                player.Id == null ||
+                player.Id.Length != 11 ||
+                player.Id.Substring(0, 5) != id ||
+                player.Name == null ||
+                player.Name.Length < 3 ||
+                player.Name.Length > 50)
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // A host must be added before new players can join
+            if (partyInfo.Resource.Players == null || partyInfo.Resource.Players.Length < 1)
+            {
+                return this.BadRequest();
+            }
+
+            // A unique key cannot be set on an array of item properties; this must be checked manually
+            PlayerExtended? existingPlayerId = partyInfo.Resource.Players.Where(x => x.Id == player.Id).FirstOrDefault();
+            if (existingPlayerId != null)
+            {
+                return this.Conflict();
+            }
+
+            PlayerExtended[] playerList = partyInfo.Resource.Players;
+            Array.Resize(ref playerList, partyInfo.Resource.Players.Length + 1);
+            playerList[playerList.Length - 1] = player;
+
+            partyInfo.Resource.Players = playerList;
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+            try
+            {
+                ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+                Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                return this.Ok(updatedParty);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict || 
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
+        // Check Rejoin Code
         // New Team
         // Join Team
         // Update Party (settings)

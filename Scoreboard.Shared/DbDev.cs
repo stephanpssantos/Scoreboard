@@ -66,7 +66,6 @@ namespace Scoreboard.Shared
                 PartyId = "ABCDE",
                 Name = "Karaoke",
                 Instructions = "Give yourself one point if you sing a song. Subtract a point if you sing a song from the forbidden list.",
-                PlayerCount = 3,
                 Scores = new GameScore[] { party1Gamescore1, party1Gamescore2 }
             };
 
