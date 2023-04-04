@@ -36,6 +36,12 @@ namespace Scoreboard.Shared
             this.database = await this.cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
             this.partyContainer = await this.database.CreateContainerIfNotExistsAsync(partyContainerId, "/id");
             this.gameContainer = await this.database.CreateContainerIfNotExistsAsync(gameContainerId, "/partyId");
+            //this.partyContainer = await this.database.DefineContainer(partyContainerId, "/id")
+            //    .WithUniqueKey().Path("/id").Attach()
+            //    .CreateIfNotExistsAsync();
+            //this.gameContainer = await this.database.DefineContainer(gameContainerId, "/partyId")
+            //    .WithUniqueKey().Path("/id").Attach()
+            //    .CreateIfNotExistsAsync();
         }
 
         public CosmosClient GetClient()

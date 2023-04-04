@@ -1,4 +1,6 @@
-﻿namespace Scoreboard.Shared.Model
+﻿using System.Text.Json.Serialization;
+
+namespace Scoreboard.Shared.Model
 {
     public class Game
     {
@@ -9,8 +11,23 @@
 
     public class GameExtended : Game
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? PartyId { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Instructions { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public GameScore[]? Scores { get; set; }
+
+        // For forced conversion to parent class
+        public Game ToGame()
+        {
+            this.PartyId = null;
+            this.Instructions = null;
+            this.Scores = null;
+
+            return this;
+        }
     }
 }
