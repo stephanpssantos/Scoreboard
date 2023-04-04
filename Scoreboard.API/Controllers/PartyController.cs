@@ -172,14 +172,61 @@ namespace Scoreboard.API.Controllers
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (
-                ex.StatusCode == HttpStatusCode.Conflict || 
+                ex.StatusCode == HttpStatusCode.Conflict ||
                 ex.StatusCode == HttpStatusCode.PreconditionFailed)
             {
                 return this.Conflict();
             }
         }
 
-        // Check Rejoin Code
+        // POST: api/party/rejoin/[id]
+        [HttpPost("rejoin/{id:length(5)}", Name = nameof(CheckRejoinCode))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> CheckRejoinCode([FromBody] PlayerExtended player, string id)
+        {
+            if (id == null ||
+                player.Id == null ||
+                player.RejoinCode == null)
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            if (partyInfo.Resource.Players == null || !partyInfo.Resource.Players.Any())
+            {
+                return this.NotFound();
+            }
+
+            PlayerExtended? playerInfo = partyInfo.Resource.Players.Where(x => x.Id == player.Id).FirstOrDefault();
+
+            if (playerInfo == null)
+            {
+                return this.NotFound();
+            }
+            else if (playerInfo.RejoinCode != player.RejoinCode)
+            {
+                return this.Unauthorized();
+            }
+            else
+            {
+                return this.Ok();
+            }
+        }
+
         // New Team
         // Join Team
         // Update Party (settings)
