@@ -6,6 +6,8 @@
         public bool TeamCreationEnabled { get; set; } = false;
         public bool TeamSizeLimited { get; set; } = false;
         public int TeamSizeLimit { get; set; } = 0;
+
+        [ScoreUpdater]
         public string ScoreUpdatedBy { get; set; } = "host";
     }
 }
