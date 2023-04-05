@@ -34,8 +34,8 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // GET: api/party/rejoin/[id]?userId=[userId]&rejoinCode=[rejoinCode]
-        [HttpGet("rejoin/{id:length(5)}", Name = nameof(CheckRejoinCode))]
+        // POST: api/party/rejoin/[id]?userId=[userId]&rejoinCode=[rejoinCode]
+        [HttpPost("rejoin/{id:length(5)}", Name = nameof(CheckRejoinCode))]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -89,7 +89,10 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> NewParty([FromBody] PartyExtended party)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || (
+                party.PartySettings.HasTeams == true && 
+                party.PartySettings.TeamCreationEnabled == false && 
+                party.PartySettings.TeamSizeLimited == true ))
             {
                 return this.BadRequest();
             }
@@ -265,7 +268,7 @@ namespace Scoreboard.API.Controllers
                 // Check if team ID is in use
                 // A unique key cannot be set on an array of item properties; this must be checked manually
                 Team? existingTeam = partyInfo.Resource.Teams.Where(x => x.Id == team.Id).FirstOrDefault();
-                
+
                 if (existingTeam != null)
                 {
                     return this.Conflict();
@@ -317,7 +320,111 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // Join Team
+        // POST: api/party/newTeam/[id]?teamId=[teamId]&playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPost("joinTeam/{id:length(5)}", Name = nameof(JoinTeam))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> JoinTeam(string id, string teamId, string playerId, string rejoinCode)
+        {
+            if (id == null ||
+                teamId == null ||
+                playerId == null ||
+                rejoinCode == null)
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            // Party id not found
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player rejoin code invalid
+            if (!IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            if (partyInfo.Resource.PartySettings.HasTeams == false)
+            {
+                return this.BadRequest();
+            }
+
+            if (partyInfo.Resource.Teams == null)
+            {
+                return this.NotFound();
+            }
+
+            // Check if user is not host and is already in another team
+            if (partyInfo.Resource.PartyHostId != playerId)
+            {
+                Team? userInTeam = partyInfo.Resource.Teams
+                    .Where(x => x.Members != null && x.Members.Contains(playerId)).FirstOrDefault();
+
+                if (userInTeam != null)
+                {
+                    return this.Conflict();
+                }
+            }
+
+            Team? teamInfo = partyInfo.Resource.Teams.Where(x => x.Id == teamId).FirstOrDefault();
+
+            if (teamInfo == null)
+            {
+                return this.NotFound();
+            }
+
+            // Reject if user is already in specified team, even if host
+            if (teamInfo.Members != null && teamInfo.Members.Contains(playerId))
+            {
+                return this.Conflict();
+            }
+
+            if (teamInfo.Members == null)
+            {
+                teamInfo.Members = new string[] { playerId };
+            }
+            else
+            {
+                string[] newMembersList = teamInfo.Members;
+                Array.Resize(ref newMembersList, newMembersList.Length + 1);
+                newMembersList[newMembersList.Length - 1] = playerId;
+                teamInfo.Members = newMembersList;
+            }
+
+            // find player in partyInfo and update team color
+            PlayerExtended playerInfo = partyInfo.Resource.Players!.Where(x => x.Id == playerId).First();
+            playerInfo.Color = teamInfo.Color;
+
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+            try
+            {
+                ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+                Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                return this.Ok(updatedParty);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+        
         // Update Party (settings)
     }
 }
