@@ -211,84 +211,112 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // POST: api/party/newTeam/[id]?userId=[userId]&rejoinCode=[rejoinCode]
-        //[HttpPost("newTeam/{id:length(5)}", Name = nameof(NewTeam))]
-        //[ProducesResponseType(200, Type = typeof(Party))]
-        //[ProducesResponseType(400)]
-        //[ProducesResponseType(404)]
-        //[ProducesResponseType(409)]
-        //public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string userId, string rejoinCode)
-        //{
-        //    if (id == null ||
-        //        team == null ||
-        //        team.Id == null ||
-        //        team.Id.Length != 11 ||
-        //        team.Id.Substring(0, 5) != id ||
-        //        team.Name == null ||
-        //        team.Name.Length < 3 ||
-        //        team.Name.Length > 50 ||
-        //        userId == null ||
-        //        userId.Length != 5)
-        //    {
-        //        return this.BadRequest();
-        //    }
+        // POST: api/party/newTeam/[id]?playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPost("newTeam/{id:length(5)}", Name = nameof(NewTeam))]
+        [ProducesResponseType(200, Type = typeof(Party))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string playerId, string rejoinCode)
+        {
+            if (!ModelState.IsValid ||
+                id == null ||
+                playerId == null ||
+                rejoinCode == null ||
+                team.Id!.Substring(0, 5) != id)
+            {
+                return this.BadRequest();
+            }
 
-        //    ItemResponse<PartyExtended> partyInfo;
+            ItemResponse<PartyExtended> partyInfo;
 
-        //    try
-        //    {
-        //        partyInfo = await this.context.GetPartyContainer()
-        //            .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
-        //    }
-        //    catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-        //    {
-        //        return this.NotFound();
-        //    }
+            // Party id not found
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
 
-        //    // if team creation enabled == false
-        //    if (partyInfo.Resource.PartySettings.HasTeams == false)
-        //    {
-        //        return this.BadRequest();
-        //    }
+            // Player rejoin code invalid
+            if (!IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
 
-        //    // A host must be added before new players can join
-        //    if (partyInfo.Resource.Players == null || partyInfo.Resource.Players.Length < 1)
-        //    {
-        //        return this.BadRequest();
-        //    }
+            if (partyInfo.Resource.PartySettings.HasTeams == false)
+            {
+                return this.BadRequest();
+            }
 
-        //    // A unique key cannot be set on an array of item properties; this must be checked manually
-        //    PlayerExtended? existingPlayerId = partyInfo.Resource.Players.Where(x => x.Id == player.Id).FirstOrDefault();
-        //    if (existingPlayerId != null)
-        //    {
-        //        return this.Conflict();
-        //    }
+            // Party host can make teams even if team creation is disabled
+            if (partyInfo.Resource.PartySettings.TeamCreationEnabled == false &&
+                partyInfo.Resource.PartyHostId != playerId)
+            {
+                return this.BadRequest();
+            }
 
-        //    PlayerExtended[] playerList = partyInfo.Resource.Players;
-        //    Array.Resize(ref playerList, partyInfo.Resource.Players.Length + 1);
-        //    playerList[playerList.Length - 1] = player;
+            if (partyInfo.Resource.Teams != null)
+            {
+                // Check if team ID is in use
+                // A unique key cannot be set on an array of item properties; this must be checked manually
+                Team? existingTeam = partyInfo.Resource.Teams.Where(x => x.Id == team.Id).FirstOrDefault();
+                
+                if (existingTeam != null)
+                {
+                    return this.Conflict();
+                }
 
-        //    partyInfo.Resource.Players = playerList;
-        //    ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+                // Check if user is not host and is already in a team
+                if (partyInfo.Resource.PartyHostId != playerId)
+                {
+                    Team? userInTeam = partyInfo.Resource.Teams
+                        .Where(x => x.Members != null && x.Members.Contains(playerId)).FirstOrDefault();
 
-        //    try
-        //    {
-        //        ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
-        //            .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+                    if (userInTeam != null)
+                    {
+                        return this.Conflict();
+                    }
+                }
+            }
 
-        //        Party updatedParty = updatedPartyExtended.Resource.ToParty();
-        //        return this.Ok(updatedParty);
-        //    }
-        //    catch (CosmosException ex) when (
-        //        ex.StatusCode == HttpStatusCode.Conflict ||
-        //        ex.StatusCode == HttpStatusCode.PreconditionFailed)
-        //    {
-        //        return this.Conflict();
-        //    }
-        //}
+            // Add user to team if user is not host
+            if (partyInfo.Resource.PartyHostId != playerId)
+            {
+                if (team.Members == null || !team.Members.Contains(playerId))
+                {
+                    string[] memberList = new string[] { playerId };
+                    team.Members = memberList;
+                }
+            }
 
-        // Update check rejoin code to use userId and rejoinCode parameters
-        // New Team
+            Team[] teamList = partyInfo.Resource.Teams ?? new Team[0];
+            Array.Resize(ref teamList, teamList.Length + 1);
+            teamList[teamList.Length - 1] = team;
+
+            partyInfo.Resource.Teams = teamList;
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+            try
+            {
+                ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+                Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                return this.Ok(updatedParty);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
         // Join Team
         // Update Party (settings)
     }

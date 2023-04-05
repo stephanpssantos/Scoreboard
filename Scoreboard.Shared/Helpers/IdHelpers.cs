@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Scoreboard.Shared.Model;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Scoreboard.Shared
@@ -25,6 +26,25 @@ namespace Scoreboard.Shared
             }
 
             return result.ToString();
+        }
+
+        public static bool CheckUserCode(PartyExtended party, string playerId, string rejoinCode)
+        {
+            if (playerId == null || party.Players == null || !party.Players.Any())
+            {
+                return false;
+            }
+
+            PlayerExtended? player = party.Players.Where(x => x.Id== playerId).FirstOrDefault();
+
+            if (player == null || (player.RejoinCode != null && player.RejoinCode != rejoinCode))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
