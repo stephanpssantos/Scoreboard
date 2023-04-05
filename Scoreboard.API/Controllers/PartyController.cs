@@ -42,13 +42,6 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> CheckRejoinCode(string id, string playerId, string rejoinCode)
         {
-            if (id == null ||
-                playerId == null ||
-                rejoinCode == null)
-            {
-                return this.BadRequest();
-            }
-
             ItemResponse<PartyExtended> partyInfo;
 
             try
@@ -224,9 +217,6 @@ namespace Scoreboard.API.Controllers
         public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string playerId, string rejoinCode)
         {
             if (!ModelState.IsValid ||
-                id == null ||
-                playerId == null ||
-                rejoinCode == null ||
                 team.Id!.Substring(0, 5) != id)
             {
                 return this.BadRequest();
@@ -329,14 +319,6 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> JoinTeam(string id, string teamId, string playerId, string rejoinCode)
         {
-            if (id == null ||
-                teamId == null ||
-                playerId == null ||
-                rejoinCode == null)
-            {
-                return this.BadRequest();
-            }
-
             ItemResponse<PartyExtended> partyInfo;
 
             // Party id not found
