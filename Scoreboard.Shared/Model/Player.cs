@@ -1,12 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Scoreboard.Shared.Model
 {
     public class Player
     {
-        // Length = 11
+        [Required]
+        [StringLength(11, MinimumLength = 11)]
         public string? Id { get; set; }
-        // Length 3 - 50
+
+        [StringLength(50, MinimumLength = 3)]
         public string? Name { get; set; }
         public string? Color { get; set; }
     }

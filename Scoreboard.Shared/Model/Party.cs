@@ -1,12 +1,16 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Scoreboard.Shared.Model
 {
     public class Party
     {
-        // Length = 5
+        [Required]
+        [StringLength(5, MinimumLength = 5)]
         public string? Id { get; set; }
-        // Length 3 - 200
+
+        [Required]
+        [StringLength(50, MinimumLength = 3)]
         public string? PartyName { get; set; }
         public PartySettings PartySettings { get; set; } = new();
         public Team[]? Teams { get; set; }
@@ -28,6 +32,7 @@ namespace Scoreboard.Shared.Model
         public DateTimeOffset? PartyCreatedDate { get; set; } = new DateTimeOffset(DateTime.UtcNow);
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [DaysOut(30)]
         public DateTimeOffset? PartyEndDate { get; set; } = new DateTimeOffset(DateTime.UtcNow.AddMonths(1));
 
         // For forced conversion to parent class

@@ -34,6 +34,54 @@ namespace Scoreboard.API.Controllers
             }
         }
 
+        // GET: api/party/rejoin/[id]?userId=[userId]&rejoinCode=[rejoinCode]
+        [HttpGet("rejoin/{id:length(5)}", Name = nameof(CheckRejoinCode))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> CheckRejoinCode(string id, string playerId, string rejoinCode)
+        {
+            if (id == null ||
+                playerId == null ||
+                rejoinCode == null)
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            if (partyInfo.Resource.Players == null || !partyInfo.Resource.Players.Any())
+            {
+                return this.NotFound();
+            }
+
+            PlayerExtended? playerInfo = partyInfo.Resource.Players.Where(x => x.Id == playerId).FirstOrDefault();
+
+            if (playerInfo == null)
+            {
+                return this.NotFound();
+            }
+            else if (playerInfo.RejoinCode != rejoinCode)
+            {
+                return this.Unauthorized();
+            }
+            else
+            {
+                return this.Ok();
+            }
+        }
+
         // POST: api/party
         [HttpPost(Name = nameof(NewParty))]
         [ProducesResponseType(201, Type = typeof(Party))]
@@ -41,13 +89,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> NewParty([FromBody] PartyExtended party)
         {
-            if (party == null ||
-                party.Id == null ||
-                party.Id.Length != 5 ||
-                party.PartyName == null ||
-                party.PartyName.Length < 3 ||
-                party.PartyName.Length > 200 ||
-                party.PartyEndDate > DateTimeOffset.Now.AddMonths(1))
+            if (!ModelState.IsValid)
             {
                 return this.BadRequest();
             }
@@ -72,13 +114,8 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> NewHost([FromBody] PlayerExtended player, string id)
         {
-            if (player == null ||
-                player.Id == null ||
-                player.Id.Length != 11 ||
-                player.Id.Substring(0, 5) != id ||
-                player.Name == null ||
-                player.Name.Length < 3 ||
-                player.Name.Length > 50)
+            if (!ModelState.IsValid ||
+                player.Id!.Substring(0, 5) != id)
             {
                 return this.BadRequest();
             }
@@ -120,13 +157,8 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(409)]
         public async Task<IActionResult> NewPlayer([FromBody] PlayerExtended player, string id)
         {
-            if (player == null ||
-                player.Id == null ||
-                player.Id.Length != 11 ||
-                player.Id.Substring(0, 5) != id ||
-                player.Name == null ||
-                player.Name.Length < 3 ||
-                player.Name.Length > 50)
+            if (!ModelState.IsValid ||
+                player.Id!.Substring(0, 5) != id)
             {
                 return this.BadRequest();
             }
@@ -179,54 +211,83 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // POST: api/party/rejoin/[id]
-        [HttpPost("rejoin/{id:length(5)}", Name = nameof(CheckRejoinCode))]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> CheckRejoinCode([FromBody] PlayerExtended player, string id)
-        {
-            if (id == null ||
-                player.Id == null ||
-                player.RejoinCode == null)
-            {
-                return this.BadRequest();
-            }
+        // POST: api/party/newTeam/[id]?userId=[userId]&rejoinCode=[rejoinCode]
+        //[HttpPost("newTeam/{id:length(5)}", Name = nameof(NewTeam))]
+        //[ProducesResponseType(200, Type = typeof(Party))]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(404)]
+        //[ProducesResponseType(409)]
+        //public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string userId, string rejoinCode)
+        //{
+        //    if (id == null ||
+        //        team == null ||
+        //        team.Id == null ||
+        //        team.Id.Length != 11 ||
+        //        team.Id.Substring(0, 5) != id ||
+        //        team.Name == null ||
+        //        team.Name.Length < 3 ||
+        //        team.Name.Length > 50 ||
+        //        userId == null ||
+        //        userId.Length != 5)
+        //    {
+        //        return this.BadRequest();
+        //    }
 
-            ItemResponse<PartyExtended> partyInfo;
+        //    ItemResponse<PartyExtended> partyInfo;
 
-            try
-            {
-                partyInfo = await this.context.GetPartyContainer()
-                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                return this.NotFound();
-            }
+        //    try
+        //    {
+        //        partyInfo = await this.context.GetPartyContainer()
+        //            .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+        //    }
+        //    catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        //    {
+        //        return this.NotFound();
+        //    }
 
-            if (partyInfo.Resource.Players == null || !partyInfo.Resource.Players.Any())
-            {
-                return this.NotFound();
-            }
+        //    // if team creation enabled == false
+        //    if (partyInfo.Resource.PartySettings.HasTeams == false)
+        //    {
+        //        return this.BadRequest();
+        //    }
 
-            PlayerExtended? playerInfo = partyInfo.Resource.Players.Where(x => x.Id == player.Id).FirstOrDefault();
+        //    // A host must be added before new players can join
+        //    if (partyInfo.Resource.Players == null || partyInfo.Resource.Players.Length < 1)
+        //    {
+        //        return this.BadRequest();
+        //    }
 
-            if (playerInfo == null)
-            {
-                return this.NotFound();
-            }
-            else if (playerInfo.RejoinCode != player.RejoinCode)
-            {
-                return this.Unauthorized();
-            }
-            else
-            {
-                return this.Ok();
-            }
-        }
+        //    // A unique key cannot be set on an array of item properties; this must be checked manually
+        //    PlayerExtended? existingPlayerId = partyInfo.Resource.Players.Where(x => x.Id == player.Id).FirstOrDefault();
+        //    if (existingPlayerId != null)
+        //    {
+        //        return this.Conflict();
+        //    }
 
+        //    PlayerExtended[] playerList = partyInfo.Resource.Players;
+        //    Array.Resize(ref playerList, partyInfo.Resource.Players.Length + 1);
+        //    playerList[playerList.Length - 1] = player;
+
+        //    partyInfo.Resource.Players = playerList;
+        //    ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+        //    try
+        //    {
+        //        ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+        //            .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+        //        Party updatedParty = updatedPartyExtended.Resource.ToParty();
+        //        return this.Ok(updatedParty);
+        //    }
+        //    catch (CosmosException ex) when (
+        //        ex.StatusCode == HttpStatusCode.Conflict ||
+        //        ex.StatusCode == HttpStatusCode.PreconditionFailed)
+        //    {
+        //        return this.Conflict();
+        //    }
+        //}
+
+        // Update check rejoin code to use userId and rejoinCode parameters
         // New Team
         // Join Team
         // Update Party (settings)
