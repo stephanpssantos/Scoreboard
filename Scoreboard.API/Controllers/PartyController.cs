@@ -406,7 +406,61 @@ namespace Scoreboard.API.Controllers
                 return this.Conflict();
             }
         }
-        
+
         // Update Party (settings)
+        // PUT: api/party/updateSettings/[id]
+        [HttpPut("updateSettings/{id:length(5)}", Name = nameof(UpdatePartySettings))]
+        [ProducesResponseType(201, Type = typeof(Party))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> UpdatePartySettings([FromBody] PartySettings partySettings, 
+            string id, string playerId, string rejoinCode)
+        {
+            if (!ModelState.IsValid || (
+                partySettings.HasTeams == true &&
+                partySettings.TeamCreationEnabled == false &&
+                partySettings.TeamSizeLimited == true))
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            // Party id not found
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player not host or rejoin code invalid
+            if (partyInfo.Resource.PartyHostId != playerId ||
+                !IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            partyInfo.Resource.PartySettings = partySettings;
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+            try
+            {
+                ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+                Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                return this.Ok(updatedParty);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
     }
 }
