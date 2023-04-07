@@ -17,7 +17,7 @@ namespace Scoreboard.Shared.Model
         public string? Instructions { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public GameScore[]? Scores { get; set; }
+        public GameScore[]? Scores { get; set; } = new GameScore[0];
 
         // For forced conversion to parent class
         public Game ToGame()
