@@ -91,6 +91,87 @@ namespace Scoreboard.API.Controllers
             }
         }
 
+        // POST: api/game/newGame/[id]?playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPost("joinGame/{id:length(11)}", Name = nameof(JoinGame))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> JoinGame(string id, string playerId, string rejoinCode)
+        {
+            string partyId = id.Substring(0, 5);
+            ItemResponse<PartyExtended> partyInfo;
+            ItemResponse<GameExtended> gameInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer().ReadItemAsync<PartyExtended>(partyId, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player rejoin code invalid
+            if (!IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            Player player = partyInfo.Resource.Players!.Where(x => x.Id == playerId).First();
+
+            try
+            {
+                gameInfo = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(id, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player already in game
+            GameScore? playerInGame = gameInfo.Resource.Scores?.Where(x => x.Player?.Id == playerId).FirstOrDefault();
+            if (playerInGame != null)
+            {
+                return this.Conflict();
+            }
+
+            GameScore newPlayerScore = new()
+            {
+                Player = player,
+                Score = 0
+            };
+
+            if (gameInfo.Resource.Scores == null)
+            {
+                gameInfo.Resource.Scores = new[] { newPlayerScore };
+            }
+            else
+            {
+                GameScore[] newGameScoreList = gameInfo.Resource.Scores;
+                Array.Resize(ref newGameScoreList, newGameScoreList.Length + 1);
+                newGameScoreList[newGameScoreList.Length - 1] = newPlayerScore;
+                gameInfo.Resource.Scores = newGameScoreList;
+            }
+
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = gameInfo.ETag };
+
+            try
+            {
+                ItemResponse<GameExtended> updatedGameExtended = await this.context.GetGameContainer()
+                    .UpsertItemAsync<GameExtended>(gameInfo.Resource, new PartitionKey(partyId), requestOptions);
+
+                return this.Ok(updatedGameExtended.Resource);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
         // JoinGame(input: gameId, userId, rejoinCode); check if user is already in game
         // UpdateGame (input: GameExtended, userId, rejoinCode); check if user is host; update party if game name changes; do not update id or partyId)
         // UpdateScore (input: gameId, newScore, userId, rejoinCode);
