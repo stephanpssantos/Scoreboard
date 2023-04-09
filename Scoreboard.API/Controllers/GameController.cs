@@ -3,6 +3,7 @@ using Scoreboard.Shared;
 using Scoreboard.Shared.Model;
 using Microsoft.Azure.Cosmos;
 using System.Net;
+using System.Numerics;
 
 namespace Scoreboard.API.Controllers
 {
@@ -227,7 +228,104 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        
+        // PUT: api/game/updateGameScore/[id]?score=[score]&playerUpdateId=[playerUpdateId]&playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPut("updateGameScore/{id:length(11)}", Name = nameof(UpdateScore))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> UpdateScore(string id, int score, string playerUpdateId, string playerId, string rejoinCode)
+        {
+            string partyId = id.Substring(0, 5);
+            ItemResponse<PartyExtended> partyInfo;
+            ItemResponse<GameExtended> gameInfo;
+
+            // Maybe send model instead for auto validation?
+            if (score < -999 || score > 9999)
+            {
+                return this.BadRequest();
+            }
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer().ReadItemAsync<PartyExtended>(partyId, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Score updated by host and player is not host
+            if (partyInfo.Resource.PartySettings.ScoreUpdatedBy == "host" &&
+                partyInfo.Resource.PartyHostId != playerId)
+            {
+                return this.Unauthorized();
+            }
+
+            // Score updated by player and requester is not player
+            if (partyInfo.Resource.PartySettings.ScoreUpdatedBy == "player" &&
+                playerUpdateId != playerId)
+            {
+                return this.Unauthorized();
+            }
+
+            // Score updated by player or host and player rejoin code invalid
+            if (partyInfo.Resource.PartySettings.ScoreUpdatedBy != "anyone" &&
+                !IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            // Check if player in game and get array index
+            try
+            {
+                gameInfo = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(id, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            var gameScore = gameInfo.Resource.Scores?
+                .Select((x, i) => new { gameScore = x, index = i})
+                .Where(x => x.gameScore.Player?.Id == playerUpdateId)
+                .FirstOrDefault();
+
+            if (gameScore == null)
+            {
+                return this.NotFound();
+            }
+
+            string docPath = "/scores/" + gameScore.index + "/score";
+
+            PatchOperation[] patchOperations = new[]
+            {
+                PatchOperation.Replace(docPath, score)
+            };
+
+            PatchItemRequestOptions requestOptions = new PatchItemRequestOptions { IfMatchEtag = gameInfo.ETag };
+
+            try
+            {
+                ItemResponse<GameExtended> updatedGameExtended = await this.context.GetGameContainer()
+                    .PatchItemAsync<GameExtended>(id, new PartitionKey(partyId), patchOperations, requestOptions);
+
+                GameExtended updatedGame = updatedGameExtended.Resource;
+                return this.Ok(updatedGame);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
         // UpdateScore (input: gameId, newScore, userId, rejoinCode);
         // GetScores (input: partyId); return [{gameId, gameName, scores: [{playerId, playerName, score}]}]
         // DeleteGame (input: gameId, userId, rejoinCode); check if user is host
