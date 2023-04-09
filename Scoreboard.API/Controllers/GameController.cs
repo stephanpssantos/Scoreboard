@@ -309,7 +309,7 @@ namespace Scoreboard.API.Controllers
             }
 
             var gameScore = gameInfo.Resource.Scores?
-                .Select((x, i) => new { gameScore = x, index = i})
+                .Select((x, i) => new { gameScore = x, index = i })
                 .Where(x => x.gameScore.Player?.Id == playerUpdateId)
                 .FirstOrDefault();
 
@@ -348,5 +348,44 @@ namespace Scoreboard.API.Controllers
         }
 
         // DeleteGame (input: gameId, userId, rejoinCode); check if user is host
+        // DELETE: api/game/[id]?playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpDelete("{id:length(11)}", Name = nameof(DeleteGame))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteGame(string id, string playerId, string rejoinCode)
+        {
+            string partyId = id.Substring(0, 5);
+            ItemResponse<PartyExtended> partyInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer().ReadItemAsync<PartyExtended>(partyId, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player rejoin code invalid or player not host
+            if (partyInfo.Resource.PartyHostId != playerId ||
+                !IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            try
+            {
+                var deleteGame = await this.context.GetGameContainer()
+                    .DeleteItemAsync<GameExtended>(id, new PartitionKey(partyId));
+
+                return this.Ok();
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+        }
     }
 }
