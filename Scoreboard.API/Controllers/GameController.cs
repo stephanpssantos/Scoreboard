@@ -3,7 +3,6 @@ using Scoreboard.Shared;
 using Scoreboard.Shared.Model;
 using Microsoft.Azure.Cosmos;
 using System.Net;
-using System.Numerics;
 
 namespace Scoreboard.API.Controllers
 {
@@ -34,6 +33,28 @@ namespace Scoreboard.API.Controllers
             {
                 return this.NotFound();
             }
+        }
+
+        // GET: api/game/scores/[id]
+        [HttpGet("scores/{id:length(5)}", Name = nameof(GetGameScores))]
+        [ProducesResponseType(200, Type = typeof(GameExtended[]))]
+        public async Task<IActionResult> GetGameScores(string id)
+        {
+            var setIterator = this.context.GetGameContainer()
+                .GetItemQueryIterator<GameExtended>($"select * from c where c.partyId = '{id}'");
+
+            List<GameExtended> games = new();
+
+            while (setIterator.HasMoreResults)
+            {
+                FeedResponse<GameExtended> currentResultSet = await setIterator.ReadNextAsync();
+                foreach (GameExtended game in currentResultSet)
+                {
+                    games.Add(game);
+                }
+            }
+
+            return this.Ok(games);
         }
 
         // POST: api/game/new/[id]?userId=[userId]&rejoinCode=[rejoinCode]
@@ -204,8 +225,8 @@ namespace Scoreboard.API.Controllers
             // Name and instructions are the only properties that should be updated by this action
             PatchOperation[] patchOperations = new[]
             {
-                PatchOperation.Replace("/name", game.Name),
-                PatchOperation.Replace("/instructions", game.Instructions)
+                PatchOperation.Add("/name", game.Name),
+                PatchOperation.Add("/instructions", game.Instructions),
             };
 
             try
@@ -326,8 +347,6 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // UpdateScore (input: gameId, newScore, userId, rejoinCode);
-        // GetScores (input: partyId); return [{gameId, gameName, scores: [{playerId, playerName, score}]}]
         // DeleteGame (input: gameId, userId, rejoinCode); check if user is host
     }
 }
