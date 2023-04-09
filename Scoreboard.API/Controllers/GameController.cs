@@ -172,8 +172,62 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // JoinGame(input: gameId, userId, rejoinCode); check if user is already in game
-        // UpdateGame (input: GameExtended, userId, rejoinCode); check if user is host; update party if game name changes; do not update id or partyId)
+        // PUT: api/game/updateGame/[id]?playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPut("updateGame/{id:length(11)}", Name = nameof(UpdateGame))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> UpdateGame(string id, GameExtended game, string playerId, string rejoinCode)
+        {
+            string partyId = id.Substring(0, 5);
+            ItemResponse<PartyExtended> partyInfo;
+
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer().ReadItemAsync<PartyExtended>(partyId, new PartitionKey(partyId));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player rejoin code invalid or player not host
+            if (partyInfo.Resource.PartyHostId != playerId ||
+                !IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            // Name and instructions are the only properties that should be updated by this action
+            PatchOperation[] patchOperations = new[]
+            {
+                PatchOperation.Replace("/name", game.Name),
+                PatchOperation.Replace("/instructions", game.Instructions)
+            };
+
+            try
+            {
+                ItemResponse<GameExtended> updatedGameExtended = await this.context.GetGameContainer()
+                    .PatchItemAsync<GameExtended>(id, new PartitionKey(partyId), patchOperations);
+
+                GameExtended updatedGame = updatedGameExtended.Resource;
+                return this.Ok(updatedGame);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
+        
         // UpdateScore (input: gameId, newScore, userId, rejoinCode);
         // GetScores (input: partyId); return [{gameId, gameName, scores: [{playerId, playerName, score}]}]
         // DeleteGame (input: gameId, userId, rejoinCode); check if user is host
