@@ -14,6 +14,18 @@ namespace Scoreboard.API
             builder.Services.AddSingleton<IScoreboardContext>(s => new ScoreboardContext(endpointURI, primaryKey));
             builder.Services.AddHostedService<DbInitializer>();
             builder.Services.AddControllers();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins(builder.Configuration["ClientAddress"]!)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -25,6 +37,7 @@ namespace Scoreboard.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors();
             }
 
             app.UseHttpsRedirection();
