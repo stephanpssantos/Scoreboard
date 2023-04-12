@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import generateId from "../helpers/generateId";
+import dataContext from "../dataContext";
 import './NewParty.css';
 
 class NewPartyPage extends Component {
@@ -39,29 +39,17 @@ class NewPartyPage extends Component {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        // create a helper class for this
-                        // for NewParty, it should retry if getting a 409
-                        // 
-                        let newPartyId = generateId(5);
-                        let url = process.env.REACT_APP_API_BASEURL + "/api/Party";
-                        let reqBody = {
-                            id: newPartyId,
+                        let newPartyOptions = {
                             partyName: values.partyName,
-                            partyEndDate: values.endDate
+                            endDate: values.endDate
                         };
-
-                        fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(reqBody)
-                        })
+                        dataContext.newParty(newPartyOptions)
                         .then((response) => {
                             console.log(response);
                             return response.json();
                         })
-                        .then(response => console.log(response));
+                        .then(response => console.log(response))
+                        .catch(err => console.log(err)); // display error page / please try again
                     }}
                 >
                     {({ isSubmitting }) => (
