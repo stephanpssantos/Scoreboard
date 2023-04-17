@@ -45,11 +45,18 @@ class NewPartyPage extends Component {
                         };
                         dataContext.newParty(newPartyOptions)
                         .then((response) => {
-                            console.log(response);
                             return response.json();
                         })
-                        .then(response => console.log(response))
-                        .catch(err => console.log(err)); // display error page / please try again
+                        .then(response => {
+                            localStorage.setItem("party", JSON.stringify(response));
+                            // set page state on parent component
+                            console.log(response);
+                        })
+                        .catch(err => {
+                            this.props.setErrors(err.toString());
+                            this.props.setCurrentPage("errors");
+                            console.log(err);
+                        });
                     }}
                 >
                     {({ isSubmitting }) => (
@@ -66,7 +73,10 @@ class NewPartyPage extends Component {
                         </Form>
                     )}
                 </Formik>
-                <button className="defaultInputWidth buttonInput"><strong>BACK</strong></button>
+                <button className="defaultInputWidth buttonInput"
+                    onClick={() => this.props.setCurrentPage("landing") }>
+                    <strong>BACK</strong>
+                </button>
             </div>
         );
     }
