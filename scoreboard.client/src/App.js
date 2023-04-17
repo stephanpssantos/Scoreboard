@@ -5,7 +5,7 @@ import LandingPage from "./pages/Landing";
 import NewPartyPage from "./pages/NewParty";
 
 function App() {
-    const [currentPage, setCurrentPage] = useState("newParty");
+    const [currentPage, setCurrentPage] = useState("landing");
     const [errors, setErrors] = useState("");
 
     let currentPageContent;
@@ -19,7 +19,7 @@ function App() {
             break;
         case "landing":
         default:
-            currentPageContent = <LandingPage />
+            currentPageContent = <LandingPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
     }
 
