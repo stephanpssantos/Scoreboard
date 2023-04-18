@@ -28,6 +28,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function getPartyNoRetry(partyCode) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL + "/api/Party/" + partyCode;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    });
+}
+
 function newPartyNoRetry(newPartyOptions) {
     return new Promise((resolve, reject) => {
         let newPartyId = generateId(5);
@@ -50,12 +65,18 @@ function newPartyNoRetry(newPartyOptions) {
     });
 }
 
+function getParty(partyCode) {
+    return new Promise((resolve, reject) => {
+        retryCall(getPartyNoRetry, partyCode, resolve, reject);
+    });
+}
+
 function newParty(newPartyOptions) {
     return new Promise((resolve, reject) => {
         retryCall(newPartyNoRetry, newPartyOptions, resolve, reject, 5, 0)
     });
 }
 
-let dataContext = { newParty };
+let dataContext = { getParty, newParty };
 
 export default dataContext;

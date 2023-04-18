@@ -20,20 +20,19 @@ function LandingPage({ setCurrentPage, setErrors }) {
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
-                    console.log(values);
-                    //dataContext.getParty(values.partyCode)
-                    //    .then((response) => {
-                    //        return response.json();
-                    //    })
-                    //    .then(response => {
-                    //        //localStorage.setItem("party", JSON.stringify(response));
-                    //        console.log(response);
-                    //    })
-                    //    .catch(err => {
-                    //        setErrors(err.toString());
-                    //        setCurrentPage("errors");
-                    //        console.log(err);
-                    //    });
+                    dataContext.getParty(values.partyCode)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then(response => {
+                        localStorage.setItem("party", JSON.stringify(response));
+                        // should then redirect to player selection screen
+                    })
+                    .catch(err => {
+                        setErrors(err.toString());
+                        setCurrentPage("errors");
+                        console.log(err);
+                    });
                 }}
             >
                 {({ isSubmitting }) => (
