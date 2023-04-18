@@ -45,7 +45,7 @@ function NewPartyPage({ setCurrentPage, setErrors }) {
                         })
                         .then(response => {
                             localStorage.setItem("party", JSON.stringify(response));
-                            // set page state on parent component
+                            setCurrentPage("newHost");
                             console.log(response);
                         })
                         .catch(err => {

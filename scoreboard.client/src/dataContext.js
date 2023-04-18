@@ -72,8 +72,8 @@ function newHostNoRetry(newHostOptions) {
             + "/api/Party/newHost/"
             + newHostOptions.partyId;
         let reqBody = {
-            playerId: newPlayerId,
-            playerName: newHostOptions.playerName,
+            id: newPlayerId,
+            name: newHostOptions.playerName,
             rejoinCode: newHostOptions.rejoinCode
         };
 
@@ -84,7 +84,10 @@ function newHostNoRetry(newHostOptions) {
             },
             body: JSON.stringify(reqBody)
         })
-        .then(response => resolve(response))
+        .then(response => {
+            response.newPlayerId = newPlayerId;
+            resolve(response);
+        })
         .catch(err => reject(err));
     });
 }
