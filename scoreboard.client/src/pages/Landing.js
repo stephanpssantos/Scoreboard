@@ -43,16 +43,17 @@ function LandingPage({ setCurrentPage, setErrors }) {
                         <button type="submit" disabled={isSubmitting} className="buttonInput mt-2">
                             <strong>JOIN</strong>
                         </button>
-                        <div className="landingPage__container--space">
-                            <span>OR</span>
-                        </div>
-                        <button className="buttonInput"
-                            onClick={() => setCurrentPage("newParty")}>
-                            <strong>+ NEW</strong>
-                        </button>
                     </Form>
                 )}
             </Formik>
+            <div className="landingPage__container--space">
+                <span>OR</span>
+            </div>
+            <button type="button"
+                className="buttonInput defaultInputWidth"
+                onClick={() => setCurrentPage("newParty")}>
+                <strong>+ NEW</strong>
+            </button>
         </div>
     );
 }

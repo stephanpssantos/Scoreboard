@@ -12,7 +12,8 @@ function ErrorsPage({ errors, setErrors, setCurrentPage }) {
                 <div className="errorsPage__errorsPanel">
                     <span>{preservedErrors}</span>
                 </div>
-                <button className="defaultInputWidth buttonInput mt-4"
+                <button type="button"
+                    className="defaultInputWidth buttonInput mt-4"
                     style={{ alignSelf: "center" }}
                     onClick={() => {
                         setErrors("");

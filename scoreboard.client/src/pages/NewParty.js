@@ -69,7 +69,8 @@ function NewPartyPage({ setCurrentPage, setErrors }) {
                     </Form>
                 )}
             </Formik>
-            <button className="defaultInputWidth buttonInput"
+            <button type="button"
+                className="defaultInputWidth buttonInput"
                 onClick={() => setCurrentPage("landing")}>
                 <strong>BACK</strong>
             </button>
