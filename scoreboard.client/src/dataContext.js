@@ -65,6 +65,30 @@ function newPartyNoRetry(newPartyOptions) {
     });
 }
 
+function newHostNoRetry(newHostOptions) {
+    return new Promise((resolve, reject) => {
+        let newPlayerId = newHostOptions.partyId + "-" + generateId(5);
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Party/newHost/"
+            + newHostOptions.partyId;
+        let reqBody = {
+            playerId: newPlayerId,
+            playerName: newHostOptions.playerName,
+            rejoinCode: newHostOptions.rejoinCode
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    });
+}
+
 function getParty(partyCode) {
     return new Promise((resolve, reject) => {
         retryCall(getPartyNoRetry, partyCode, resolve, reject);
@@ -77,6 +101,12 @@ function newParty(newPartyOptions) {
     });
 }
 
-let dataContext = { getParty, newParty };
+function newHost(newHostOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(newHostNoRetry, newHostOptions, resolve, reject)
+    });
+}
+
+let dataContext = { getParty, newParty, newHost };
 
 export default dataContext;
