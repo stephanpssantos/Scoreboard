@@ -20,7 +20,7 @@ function LandingPage({ setCurrentPage, setErrors }) {
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
-                    dataContext.getParty(values.partyCode)
+                    dataContext.getParty(values.partyCode.toUpperCase())
                     .then((response) => {
                         return response.json();
                     })
