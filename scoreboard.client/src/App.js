@@ -3,6 +3,7 @@ import './App.css';
 import Errors from "./pages/Errors";
 import LandingPage from "./pages/Landing";
 import NewPartyPage from "./pages/NewParty";
+import NewPartySettingsPage from "./pages/NewPartySettings";
 import NewHostPage from "./pages/NewHost";
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
             break;
         case "newParty":
             currentPageContent = <NewPartyPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "newPartySettings":
+            currentPageContent = <NewPartySettingsPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "newHost":
             currentPageContent = <NewHostPage setCurrentPage={setCurrentPage} setErrors={setErrors} />

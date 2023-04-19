@@ -1,0 +1,13 @@
+.newPartySettingsPage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.newPartySettingsPage__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

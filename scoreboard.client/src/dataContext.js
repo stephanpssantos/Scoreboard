@@ -50,7 +50,8 @@ function newPartyNoRetry(newPartyOptions) {
         let reqBody = {
             id: newPartyId,
             partyName: newPartyOptions.partyName,
-            partyEndDate: newPartyOptions.endDate
+            partyEndDate: newPartyOptions.partyEndDate,
+            partySettings: newPartyOptions.partySettings
         };
 
         fetch(url, {

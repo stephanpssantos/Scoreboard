@@ -1,5 +1,4 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import dataContext from "../dataContext";
 import './NewParty.css';
 
 function NewPartyPage({ setCurrentPage, setErrors }) {
@@ -37,22 +36,10 @@ function NewPartyPage({ setCurrentPage, setErrors }) {
                 onSubmit={(values, { setSubmitting }) => {
                     let newPartyOptions = {
                         partyName: values.partyName,
-                        endDate: values.endDate
+                        partyEndDate: values.endDate
                     };
-                    dataContext.newParty(newPartyOptions)
-                        .then((response) => {
-                            return response.json();
-                        })
-                        .then(response => {
-                            localStorage.setItem("party", JSON.stringify(response));
-                            setCurrentPage("newHost");
-                            console.log(response);
-                        })
-                        .catch(err => {
-                            setErrors(err.toString());
-                            setCurrentPage("errors");
-                            console.log(err);
-                        });
+                    localStorage.setItem("party", JSON.stringify(newPartyOptions));
+                    setCurrentPage("newPartySettings");
                 }}
             >
                 {({ isSubmitting }) => (
@@ -64,7 +51,7 @@ function NewPartyPage({ setCurrentPage, setErrors }) {
                         <ErrorMessage name="endDate" component="div" className="errorMessage" />
                         <Field type="date" name="endDate" className="textInput centerText" />
                         <button type="submit" disabled={isSubmitting} className="buttonInput mt-2">
-                            <strong>START</strong>
+                            <strong>CONTINUE</strong>
                         </button>
                     </Form>
                 )}

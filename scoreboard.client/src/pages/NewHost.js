@@ -6,7 +6,6 @@ function NewHostPage({ setCurrentPage, setErrors }) {
     let partyInfo = localStorage.getItem("party");
     partyInfo = JSON.parse(partyInfo);
     let partyId = partyInfo.id;
-    console.log(partyId);
 
     return (
         <div className="newHostPage">
@@ -41,8 +40,11 @@ function NewHostPage({ setCurrentPage, setErrors }) {
                     };
                     dataContext.newHost(newHostOptions)
                     .then((response) => {
-                        if (response.newPlayerId == undefined) {
-                            throw ("Error creating new player");
+                        if (response.newPlayerId === undefined) {
+                            throw Object.assign(
+                                new Error("Error creating new player"),
+                                { code: 500 }
+                            );
                         }
                         newHostOptions.playerId = response.newPlayerId;
                         return response.json();
@@ -73,14 +75,14 @@ function NewHostPage({ setCurrentPage, setErrors }) {
                         <ErrorMessage name="rejoinCode" component="div" className="errorMessage" />
                         <Field type="text" name="rejoinCode" className="textInput centerText" placeholder="Enter rejoin code" />
                         <button type="submit" disabled={isSubmitting} className="buttonInput mt-2">
-                            <strong>JOIN</strong>
+                            <strong>START</strong>
                         </button>
                     </Form>
                 )}
             </Formik>
             <button type="button"
                 className="defaultInputWidth buttonInput"
-                onClick={() => setCurrentPage("landing")}>
+                onClick={() => setCurrentPage("newParty")}>
                 <strong>BACK</strong>
             </button>
         </div>
