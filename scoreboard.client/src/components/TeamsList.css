@@ -17,8 +17,13 @@
     border-radius: 4px;
 }
 
-.teamsList__teamLeftColumn {
-    
+.teamsList__team:hover {
+    cursor: pointer;
+}
+
+.teamsList__team--active {
+    border: 0.25em solid #FFF;
+    outline: 0.25em solid #000;
 }
 
 .teamsList__teamRightColumn {

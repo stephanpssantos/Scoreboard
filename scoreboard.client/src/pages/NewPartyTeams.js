@@ -7,7 +7,7 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
 
     let playerInfo = localStorage.getItem("player");
     playerInfo = JSON.parse(playerInfo);
-    // teams list component
+
     // join team button
     // new team button
 

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import "./TeamsList.css";
 
 function TeamsList({ setSelectedTeam }) {
+    const [selectedTeamIndex, setSelectedTeamIndex] = useState(-1);
     let partyInfo = localStorage.getItem("party");
     partyInfo = JSON.parse(partyInfo);
     let teamsInfo = partyInfo.teams === null || undefined ? [] : partyInfo.teams;
@@ -28,8 +30,14 @@ function TeamsList({ setSelectedTeam }) {
         let teamColor = teamsInfo[i].color ?? "#FFFFFF";
 
         teamsDOM.push(
-            <div key={key} className="teamsList__team" style={{ backgroundColor: teamColor }}>
-                <div className="teamsList__teamLeftColumn truncate">
+            <div key={key}
+                className={selectedTeamIndex === i ? "teamsList__team teamsList__team--active" : "teamsList__team"}
+                style={{ backgroundColor: teamColor }}
+                onClick={() => {
+                    setSelectedTeamIndex(i);
+                    setSelectedTeam(teamsInfo[i].id);
+                }}>
+                <div className="truncate">
                     <h3 className="m-0" style={{ display: "inline" }}>{teamsInfo[i].name}</h3>
                     <br />
                     <span>{teamMemberNames.join(", ")}</span>
