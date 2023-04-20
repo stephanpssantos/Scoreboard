@@ -56,8 +56,7 @@ function NewHostPage({ setCurrentPage, setErrors }) {
                         localStorage.setItem("party", partyString);
                         localStorage.setItem("player", playerString);
 
-                        // set page state on parent component
-                        console.log(response);
+                        setCurrentPage("newPartyTeams");
                     })
                     .catch(err => {
                         setErrors(err.toString());

@@ -28,7 +28,7 @@ namespace Scoreboard.Shared
             {
                 Id = "ABCDE-LBMXD",
                 Name = "Angela",
-                Color = "#FFDBLF",
+                Color = "#FFDB1F",
                 RejoinCode = "QWERT"
             };
 
@@ -36,17 +36,50 @@ namespace Scoreboard.Shared
             {
                 Id = "ABCDE-SDREX",
                 Name = "Bob",
-                Color = "#FFDBLF",
+                Color = "#FFDB1F",
                 RejoinCode = "YUIOP"
+            };
+
+            var party1Player3 = new PlayerExtended()
+            {
+                Id = "ABCDE-OOEIW",
+                Name = "Cereza",
+                Color = "#FFDB1F",
+                RejoinCode = "WWWWW"
+            };
+
+            var party1Player4 = new PlayerExtended()
+            {
+                Id = "ABCDE-OOEIQ",
+                Name = "Daimo",
+                Color = "#FFDB1F",
+                RejoinCode = "WWWWW"
+            };
+
+            var party1Player5 = new PlayerExtended()
+            {
+                Id = "ABCDE-OOEIX",
+                Name = "Honker",
+                Color = "#68CF3B",
+                RejoinCode = "WWWWW"
             };
 
             var party1Team1 = new Team()
             {
                 Id = "ABCDE-XYZQW",
                 Name = "Gold Team",
-                Color = "#FFDBLF",
-                Members = new string[] { "ABCDE-LBMXD", "ABCDE-SDREX" }
+                Color = "#FFDB1F",
+                Members = new string[] { "ABCDE-LBMXD", "ABCDE-SDREX", "ABCDE-OOEIW", "ABCDE-OOEIQ" }
             };
+
+            var party1Team2 = new Team()
+            {
+                Id = "ABCDE-XYZQH",
+                Name = "Honker's Team",
+                Color = "#68CF3B",
+                Members = new string[] { "ABCDE-OOEIX" }
+            };
+
 
             var party1Gamescore1 = new GameScore()
             {
@@ -76,8 +109,8 @@ namespace Scoreboard.Shared
                 PartyEndDate = new DateTimeOffset(DateTime.UtcNow).AddDays(5),
                 PartyHostId = "ABCDE-LBMXD",
                 PartySettings = party1Settings,
-                Teams = new Team[] { party1Team1 },
-                Players = new PlayerExtended[] { party1Player1, party1Player2 },
+                Teams = new Team[] { party1Team1, party1Team2 },
+                Players = new PlayerExtended[] { party1Player1, party1Player2, party1Player3, party1Player4, party1Player5 },
                 Games = new Game[] { party1Game1 }
             };
 
