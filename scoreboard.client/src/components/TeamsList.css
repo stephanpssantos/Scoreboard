@@ -16,3 +16,12 @@
     color: #111;
     border-radius: 4px;
 }
+
+.teamsList__teamLeftColumn {
+    
+}
+
+.teamsList__teamRightColumn {
+    text-align: center;
+    min-width: 50px;
+}

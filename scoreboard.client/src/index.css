@@ -70,6 +70,12 @@ code {
     border-color: #000;
 }
 
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;

@@ -1,5 +1,4 @@
 import "./TeamsList.css";
-import truncate from "../helpers/truncate";
 
 function TeamsList({ setSelectedTeam }) {
     let partyInfo = localStorage.getItem("party");
@@ -30,11 +29,12 @@ function TeamsList({ setSelectedTeam }) {
 
         teamsDOM.push(
             <div key={key} className="teamsList__team" style={{ backgroundColor: teamColor }}>
-                <div>
-                    <h3 className="m-0">{teamsInfo[i].name}</h3>
+                <div className="teamsList__teamLeftColumn truncate">
+                    <h3 className="m-0" style={{ display: "inline" }}>{teamsInfo[i].name}</h3>
+                    <br />
                     <span>{teamMemberNames.join(", ")}</span>
                 </div>
-                <h3 className="m-0">{playerCount}</h3>
+                <h3 className="m-0 teamsList__teamRightColumn">{playerCount}</h3>
             </div>
         );
     }
