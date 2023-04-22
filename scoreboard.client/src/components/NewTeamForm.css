@@ -1,0 +1,37 @@
+/*.newTeamForm {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}*/
+
+.newTeamForm__container {
+    display: flex;
+    flex-direction: column;
+}
+
+.newTeamForm__color {
+    width: calc(100% - 0.5em);
+    height: 45px;
+    margin-top: 0.25em;
+    border: 0.25em solid #000;
+    border-radius: 6px;
+}
+
+.newTeamForm__color:hover {
+    cursor: pointer;
+}
+
+.newTeamForm__colorContainer {
+    position: absolute; 
+    z-Index: 2;
+}
+
+.newTeamForm__colorCover {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

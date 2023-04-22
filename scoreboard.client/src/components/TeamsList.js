@@ -48,7 +48,7 @@ function TeamsList({ setSelectedTeam }) {
     }
     let display = teamsDOM.length > 0 ? teamsDOM : (
         <div>
-            No teams made yet
+            <h3>No teams made yet</h3>
         </div>
         );
 

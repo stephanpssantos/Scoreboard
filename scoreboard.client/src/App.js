@@ -6,6 +6,7 @@ import NewPartyPage from "./pages/NewParty";
 import NewPartySettingsPage from "./pages/NewPartySettings";
 import NewHostPage from "./pages/NewHost";
 import NewPartyTeamsPage from "./pages/NewPartyTeams";
+import HostNewTeamPage from "./pages/HostNewTeam";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("landing");
@@ -28,6 +29,9 @@ function App() {
             break;
         case "newPartyTeams":
             currentPageContent = <NewPartyTeamsPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "hostNewTeam":
+            currentPageContent = <HostNewTeamPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "landing":
         default:

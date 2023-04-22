@@ -64,10 +64,15 @@ code {
     background-color: #FFF;
 }
 
-.buttonInput:hover {
+.buttonInput:hover:enabled {
     color: #FFF;
     background-color: #282c34;
     border-color: #000;
+    cursor: pointer;
+}
+
+.buttonInput:disabled {
+    background-color: #AAA;
 }
 
 .truncate {
