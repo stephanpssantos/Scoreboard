@@ -22,8 +22,7 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
 
         dataContext.joinTeam(joinTeamOptions)
         .then(response => {
-            setCurrentPage("landing");
-            // Should redirect to games page
+            setCurrentPage("games");
         })
         .catch(err => {
             setErrors(err.toString());
