@@ -5,8 +5,3 @@
     justify-content: space-around;
     align-items: center;
 }
-
-.newHostPage__container {
-    display: flex;
-    flex-direction: column;
-}

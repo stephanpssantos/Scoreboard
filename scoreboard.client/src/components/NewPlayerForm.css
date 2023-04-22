@@ -1,2 +1,4 @@
-body {
+.newPlayerForm {
+    display: flex;
+    flex-direction: column;
 }
