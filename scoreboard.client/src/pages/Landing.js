@@ -26,8 +26,7 @@ function LandingPage({ setCurrentPage, setErrors }) {
                     })
                     .then(response => {
                         localStorage.setItem("party", JSON.stringify(response));
-                        //setCurrentPage("newPartyTeams");
-                        // SHOULD redirect to player selection screen
+                        setCurrentPage("newPlayer");
                     })
                     .catch(err => {
                         setErrors(err.toString());

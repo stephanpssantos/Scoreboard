@@ -40,7 +40,7 @@ function NewHostPage({ setCurrentPage, setErrors }) {
     return (
         <div className="newHostPage">
             <div />
-            <NewPlayerForm newPlayerSubmitted={newPlayerSubmitted} />
+            <NewPlayerForm newPlayerSubmitted={newPlayerSubmitted} rejoinCodeRequired={true} />
             <button type="button"
                 className="defaultInputWidth buttonInput"
                 onClick={() => setCurrentPage("newParty")}>

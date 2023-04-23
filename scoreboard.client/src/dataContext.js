@@ -99,6 +99,33 @@ function newHostNoRetry(newHostOptions) {
     });
 }
 
+function newPlayerNoRetry(newPlayerOptions) {
+    return new Promise((resolve, reject) => {
+        let newPlayerId = newPlayerOptions.partyId + "-" + generateId(5);
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Party/newPlayer/"
+            + newPlayerOptions.partyId;
+        let reqBody = {
+            id: newPlayerId,
+            name: newPlayerOptions.playerName,
+            rejoinCode: newPlayerOptions.rejoinCode
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then(response => {
+            response.newPlayerId = newPlayerId;
+            resolve(response);
+        })
+        .catch(err => reject(err));
+    });
+}
+
 function newTeamNoRetry(newTeamOptions) {
     return new Promise((resolve, reject) => {
         let newTeamId = newTeamOptions.partyId + "-" + generateId(5);
@@ -166,6 +193,12 @@ function newHost(newHostOptions) {
     });
 }
 
+function newPlayer(newPlayerOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(newPlayerNoRetry, newPlayerOptions, resolve, reject)
+    });
+}
+
 function newTeam(newTeamOptions) {
     return new Promise((resolve, reject) => {
         retryCall(newTeamNoRetry, newTeamOptions, resolve, reject)
@@ -178,6 +211,6 @@ function joinTeam(joinTeamOptions) {
     });
 }
 
-let dataContext = { getParty, newParty, newHost, newTeam, joinTeam };
+let dataContext = { getParty, newParty, newHost, newPlayer, newTeam, joinTeam };
 
 export default dataContext;
