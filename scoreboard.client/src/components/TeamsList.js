@@ -1,12 +1,27 @@
 import { useState } from "react";
 import "./TeamsList.css";
 
-function TeamsList({ setSelectedTeam }) {
+function TeamsList({ setSelectedTeam, setSizeLimitReached }) {
     const [selectedTeamIndex, setSelectedTeamIndex] = useState(-1);
+
     let partyInfo = localStorage.getItem("party");
     partyInfo = JSON.parse(partyInfo);
+
+    const checkLimitReached = teamSize => {
+        if (!partyInfo.partySettings.teamSizeLimited) {
+            return;
+        }
+        else if (partyInfo.partySettings.teamSizeLimit <= teamSize) {
+            setSizeLimitReached(true);
+        }
+        else {
+            setSizeLimitReached(false);
+        }
+    }
+
     let teamsInfo = partyInfo.teams === null || undefined ? [] : partyInfo.teams;
     let teamsDOM = [];
+
     for (let i = 0; i < teamsInfo.length; i++) {
         let key = "teamsList_team-" + i;
         let teamMembers = teamsInfo[i].members ?? [];
@@ -34,6 +49,7 @@ function TeamsList({ setSelectedTeam }) {
                 className={selectedTeamIndex === i ? "teamsList__team teamsList__team--active" : "teamsList__team"}
                 style={{ backgroundColor: teamColor }}
                 onClick={() => {
+                    checkLimitReached(teamMembers.length);
                     setSelectedTeamIndex(i);
                     setSelectedTeam(teamsInfo[i].id);
                 }}>

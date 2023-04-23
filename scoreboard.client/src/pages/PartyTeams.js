@@ -1,13 +1,12 @@
 import { useState } from "react";
 import dataContext from "../dataContext";
 import TeamsList from "../components/TeamsList";
-import "./NewPartyTeams.css"
+import "./PartyTeams.css"
 
-// May be redundant. Consider merging with PartyTeams.js
-
-function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
+function PartyTeamsPage({ setCurrentPage, setErrors }) {
     const [selectedTeam, setSelectedTeam] = useState("");
     const [requestSent, setRequestSent] = useState(false);
+    const [sizeLimitReached, setSizeLimitReached] = useState(false);
 
     let playerInfo = localStorage.getItem("player");
     playerInfo = JSON.parse(playerInfo);
@@ -33,22 +32,22 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
     }
 
     return (
-        <div className="newPartyTeamsPage">
-            <TeamsList setSelectedTeam={setSelectedTeam} setSizeLimitReached={() => null } />
+        <div className="partyTeamsPage">
+            <TeamsList setSelectedTeam={setSelectedTeam} setSizeLimitReached={setSizeLimitReached} />
             <button type="button"
                 className="defaultInputWidth buttonInput mt-1"
-                disabled={(selectedTeam === "" || requestSent) ? true : false}
+                disabled={(selectedTeam === "" || sizeLimitReached || requestSent) ? true : false}
                 onClick={joinTeam}>
                 <strong>JOIN TEAM</strong>
             </button>
             <button type="button"
                 className="defaultInputWidth buttonInput mt-1"
                 disabled={requestSent ? true : false}
-                onClick={() => setCurrentPage("hostNewTeam")}>
+                onClick={() => setCurrentPage("playerNewTeam")}>
                 <strong>+ NEW TEAM</strong>
             </button>
         </div>
     );
 }
 
-export default NewPartyTeamsPage;
+export default PartyTeamsPage;

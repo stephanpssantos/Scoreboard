@@ -28,8 +28,8 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
             localStorage.setItem("party", partyString);
             localStorage.setItem("player", playerString);
 
-            // Should go to playerNewTeam if team creation enabled for players
-            setCurrentPage("landing");
+            // Should go straight to games list if team creation is disabled
+            setCurrentPage("partyTeams");
         })
         .catch(err => {
             setErrors(err.toString());

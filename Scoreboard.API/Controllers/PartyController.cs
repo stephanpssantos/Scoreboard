@@ -317,7 +317,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> JoinTeam(string id, string teamId, string playerId, string rejoinCode)
+        public async Task<IActionResult> JoinTeam(string id, string teamId, string playerId, string rejoinCode = "")
         {
             ItemResponse<PartyExtended> partyInfo;
 
@@ -365,6 +365,14 @@ namespace Scoreboard.API.Controllers
             if (teamInfo == null)
             {
                 return this.NotFound();
+            }
+
+            // Reject if party size limit enabled and limit reached
+            if (teamInfo.Members != null &&
+                partyInfo.Resource.PartySettings.TeamSizeLimited &&
+                teamInfo.Members.Length >= partyInfo.Resource.PartySettings.TeamSizeLimit)
+            {
+                return this.BadRequest("Team size limit reached");
             }
 
             // Reject if user is already in specified team, even if host
