@@ -30,6 +30,11 @@ function HostNewTeamPage({ setCurrentPage, setErrors }) {
     return (
         <div className="hostNewTeam">
             <NewTeamForm submitForm={submitForm} />
+            <button type="button"
+                className="defaultInputWidth buttonInput mt-1"
+                onClick={() => setCurrentPage("newPartyTeams")}>
+                <strong>BACK</strong>
+            </button>
         </div>
     );
 }
