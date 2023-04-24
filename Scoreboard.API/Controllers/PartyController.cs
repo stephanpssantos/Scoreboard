@@ -214,7 +214,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string playerId, string rejoinCode)
+        public async Task<IActionResult> NewTeam([FromBody] Team team, string id, string playerId, string rejoinCode = "")
         {
             if (!ModelState.IsValid ||
                 team.Id!.Substring(0, 5) != id)

@@ -17,7 +17,6 @@ function retryCall(fn, params, resolve, reject, retryCount = 5, delay = 1000, at
                 retryCall(fn, params, resolve, reject, retryCount, delay, attemptCount);
             });
         } else if (!response.ok) {
-            console.log(response);
             throw Object.assign(
                 new Error(response.statusText),
                 { code: response.status }
