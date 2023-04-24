@@ -6,6 +6,7 @@ function NewHostPage({ setCurrentPage, setErrors }) {
     let partyInfo = localStorage.getItem("party");
     partyInfo = JSON.parse(partyInfo);
     let partyId = partyInfo.id;
+    let teamsEnabled = partyInfo.partySettings.hasTeams;
 
     const newPlayerSubmitted = newHostOptions => {
         newHostOptions.partyId = partyId;
@@ -28,7 +29,12 @@ function NewHostPage({ setCurrentPage, setErrors }) {
             localStorage.setItem("party", partyString);
             localStorage.setItem("player", playerString);
 
-            setCurrentPage("newPartyTeams");
+            if (teamsEnabled) {
+                setCurrentPage("newPartyTeams");
+            }
+            else {
+                setCurrentPage("games");
+            }
         })
         .catch(err => {
             setErrors(err.toString());
@@ -40,7 +46,10 @@ function NewHostPage({ setCurrentPage, setErrors }) {
     return (
         <div className="newHostPage">
             <div />
-            <NewPlayerForm newPlayerSubmitted={newPlayerSubmitted} rejoinCodeRequired={true} />
+            <NewPlayerForm
+                newPlayerSubmitted={newPlayerSubmitted}
+                rejoinCodeRequired={true}
+                teamsEnabled={teamsEnabled} />
             <button type="button"
                 className="defaultInputWidth buttonInput"
                 onClick={() => setCurrentPage("newParty")}>

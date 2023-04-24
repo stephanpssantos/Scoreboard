@@ -81,7 +81,8 @@ function newHostNoRetry(newHostOptions) {
         let reqBody = {
             id: newPlayerId,
             name: newHostOptions.playerName,
-            rejoinCode: newHostOptions.rejoinCode
+            rejoinCode: newHostOptions.rejoinCode,
+            color: newHostOptions.color
         };
 
         fetch(url, {
@@ -108,7 +109,8 @@ function newPlayerNoRetry(newPlayerOptions) {
         let reqBody = {
             id: newPlayerId,
             name: newPlayerOptions.playerName,
-            rejoinCode: newPlayerOptions.rejoinCode
+            rejoinCode: newPlayerOptions.rejoinCode,
+            color: newPlayerOptions.color
         };
 
         fetch(url, {

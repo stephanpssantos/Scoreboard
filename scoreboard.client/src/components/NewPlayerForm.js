@@ -1,7 +1,34 @@
+import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { TwitterPicker } from 'react-color';
 import "./NewPlayerForm.css";
 
-function NewPlayerForm({ newPlayerSubmitted, rejoinCodeRequired }) {
+function NewPlayerForm({ newPlayerSubmitted, rejoinCodeRequired, teamsEnabled }) {
+    const [color, setColor] = useState("#FFFFFF");
+    const [colorDisplay, setColorDisplay] = useState(false);
+    const colorPickerBox = (
+        <>
+        <span className="mt-1">PLAYER COLOR</span>
+        <div className="newPlayerForm__color"
+            style={{ backgroundColor: color }}
+            onClick={() => {
+                setColorDisplay(!colorDisplay);
+            }}
+            />
+        </>
+    );
+    const colorPicker = (
+        <div>
+            <div className="newPlayerForm__colorContainer">
+                <div className="newPlayerForm__colorCover"
+                    onClick={() => setColorDisplay(false)}
+                />
+                <TwitterPicker color={color}
+                    onChangeComplete={color => setColor(color.hex)} />
+            </div>
+        </div>
+    );
+
     return (
         <Formik
             initialValues={{ playerName: '', rejoinCode: '' }}
@@ -29,7 +56,8 @@ function NewPlayerForm({ newPlayerSubmitted, rejoinCodeRequired }) {
             onSubmit={(values, { setSubmitting }) => {
                 let newHostOptions = {
                     playerName: values.playerName,
-                    rejoinCode: values.rejoinCode
+                    rejoinCode: values.rejoinCode,
+                    color: color
                 };
 
                 newPlayerSubmitted(newHostOptions);
@@ -43,6 +71,8 @@ function NewPlayerForm({ newPlayerSubmitted, rejoinCodeRequired }) {
                     <span className="mt-1">REJOIN CODE {rejoinCodeRequired ? "" : "(OPTIONAL)"}</span>
                     <ErrorMessage name="rejoinCode" component="div" className="errorMessage" />
                     <Field type="text" name="rejoinCode" className="textInput centerText" placeholder="Enter rejoin code" />
+                    {teamsEnabled ? null : colorPickerBox}
+                    {colorDisplay ? colorPicker : null}
                     <button type="submit" disabled={isSubmitting} className="buttonInput mt-2">
                         <strong>JOIN</strong>
                     </button>

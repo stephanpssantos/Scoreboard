@@ -6,6 +6,7 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
     let partyInfo = localStorage.getItem("party");
     partyInfo = JSON.parse(partyInfo);
     let partyId = partyInfo.id;
+    let teamsEnabled = partyInfo.partySettings.hasTeams;
 
     const newPlayerSubmitted = newPlayerOptions => {
         newPlayerOptions.partyId = partyId;
@@ -28,8 +29,13 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
             localStorage.setItem("party", partyString);
             localStorage.setItem("player", playerString);
 
-            // Should go straight to games list if team creation is disabled
-            setCurrentPage("partyTeams");
+            if (teamsEnabled) {
+                setCurrentPage("partyTeams");
+            }
+            else {
+                setCurrentPage("games");
+            }
+            
         })
         .catch(err => {
             setErrors(err.toString());
@@ -41,7 +47,10 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
         <div className="newPlayerPage">
             <div />
             <div className="newPlayerPage__container">
-                <NewPlayerForm newPlayerSubmitted={newPlayerSubmitted} rejoinCodeRequired={false} />
+                <NewPlayerForm
+                    newPlayerSubmitted={newPlayerSubmitted}
+                    rejoinCodeRequired={false}
+                    teamsEnabled={teamsEnabled} />
                 <div className="newPlayerPage__container--space">
                     <span>OR</span>
                 </div>

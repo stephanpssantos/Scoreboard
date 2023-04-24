@@ -3,6 +3,7 @@ using Scoreboard.Shared;
 using Scoreboard.Shared.Model;
 using Microsoft.Azure.Cosmos;
 using System.Net;
+using System.Globalization;
 
 namespace Scoreboard.API.Controllers
 {
@@ -285,6 +286,9 @@ namespace Scoreboard.API.Controllers
                     string[] memberList = new string[] { playerId };
                     team.Members = memberList;
                 }
+
+                PlayerExtended playerInfo = partyInfo.Resource.Players!.Where(x => x.Id == playerId).First();
+                playerInfo.Color = team.Color;
             }
 
             Team[] teamList = partyInfo.Resource.Teams ?? new Team[0];
