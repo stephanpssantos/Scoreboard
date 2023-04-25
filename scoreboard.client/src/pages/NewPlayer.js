@@ -56,8 +56,7 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
                 </div>
                 <button type="button"
                     className="buttonInput defaultInputWidth"
-                    onClick={() => setCurrentPage("landing")}>
-                    {/*This should redirect to the player rejoin page;*/}
+                    onClick={() => setCurrentPage("rejoinParty")}>
                     <strong>REJOIN</strong>
                 </button>
             </div>

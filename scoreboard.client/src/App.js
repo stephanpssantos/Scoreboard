@@ -11,6 +11,8 @@ import GamesPage from "./pages/Games";
 import NewPlayerPage from "./pages/NewPlayer";
 import PartyTeamsPage from "./pages/PartyTeams";
 import PlayerNewTeamPage from "./pages/PlayerNewTeam";
+import RejoinPartyPage from "./pages/RejoinParty";
+import VerifyRejoinPage from "./pages/VerifyRejoin";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("landing");
@@ -30,6 +32,12 @@ function App() {
             break; 
         case "partyTeams":
             currentPageContent = <PartyTeamsPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "rejoinParty":
+            currentPageContent = <RejoinPartyPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "verifyRejoin":
+            currentPageContent = <VerifyRejoinPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "newParty":
             currentPageContent = <NewPartyPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
