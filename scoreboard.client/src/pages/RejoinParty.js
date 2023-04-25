@@ -18,8 +18,10 @@ function RejoinPartyPage({ setCurrentPage, setErrors }) {
                     className="rejoinPartyPage__player"
                     onClick={() => {
                         let playerInfo = {
+                            partyId: partyInfo.id,
                             playerId: partyInfo.players[i].id ?? "",
-                            playerName: playerName
+                            playerName: playerName,
+                            color: playerColor
                         };
                         localStorage.setItem("player", JSON.stringify(playerInfo));
                         setCurrentPage("verifyRejoin");

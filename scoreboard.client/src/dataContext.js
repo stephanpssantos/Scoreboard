@@ -19,7 +19,7 @@ function retryCall(fn, params, resolve, reject, retryCount = 5, delay = 1000, at
         } else if (!response.ok) {
             throw Object.assign(
                 new Error(response.statusText),
-                { code: response.status }
+                { code: response.status, raw: response }
             );
         } else {
             resolve(response);
@@ -177,6 +177,22 @@ function joinTeamNoRetry(joinTeamOptions) {
     });
 }
 
+function rejoinPartyNoRetry(rejoinOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Party/rejoin/"
+            + rejoinOptions.partyId
+            + "?playerId="
+            + rejoinOptions.playerId
+            + "&rejoinCode="
+            + rejoinOptions.rejoinCode;
+
+        fetch(url, { method: 'POST' })
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    });
+}
+
 function getParty(partyCode) {
     return new Promise((resolve, reject) => {
         retryCall(getPartyNoRetry, partyCode, resolve, reject);
@@ -213,6 +229,12 @@ function joinTeam(joinTeamOptions) {
     });
 }
 
-let dataContext = { getParty, newParty, newHost, newPlayer, newTeam, joinTeam };
+function rejoinParty(rejoinOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(rejoinPartyNoRetry, rejoinOptions, resolve, reject)
+    });
+}
+
+let dataContext = { getParty, newParty, newHost, newPlayer, newTeam, joinTeam, rejoinParty };
 
 export default dataContext;
