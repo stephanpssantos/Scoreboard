@@ -102,6 +102,33 @@ namespace Scoreboard.Shared
                 Scores = new GameScore[] { party1Gamescore1, party1Gamescore2 }
             };
 
+            var party1Game2 = new GameExtended()
+            {
+                Id = "ABCDE-BKXD1",
+                PartyId = "ABCDE",
+                Name = "Plate Throw",
+                Instructions = "Throw a plate at the wall. If you feel better, give yourself 1 point.",
+                Scores = new GameScore[] {}
+            };
+
+            var party1Game3 = new GameExtended()
+            {
+                Id = "ABCDE-BKXD2",
+                PartyId = "ABCDE",
+                Name = "Scavenger Hunt",
+                Instructions = "Find the hidden ghosts. Give yourself 3 point if you find one. Give yourself 10 points if you find the golden one.",
+                Scores = new GameScore[] {}
+            };
+
+            var party1Game4 = new GameExtended()
+            {
+                Id = "ABCDE-BKXD3",
+                PartyId = "ABCDE",
+                Name = "Nicest Face",
+                Instructions = "Find the nicest face. If you find the host, give yourself 1 point.",
+                Scores = new GameScore[] {}
+            };
+
             var party1 = new PartyExtended()
             {
                 Id = "ABCDE",
@@ -111,7 +138,7 @@ namespace Scoreboard.Shared
                 PartySettings = party1Settings,
                 Teams = new Team[] { party1Team1, party1Team2 },
                 Players = new PlayerExtended[] { party1Player1, party1Player2, party1Player3, party1Player4, party1Player5 },
-                Games = new Game[] { party1Game1 }
+                Games = new Game[] { party1Game1, party1Game2, party1Game3, party1Game4 }
             };
 
             try

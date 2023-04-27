@@ -8,6 +8,7 @@ import NewHostPage from "./pages/NewHost";
 import NewPartyTeamsPage from "./pages/NewPartyTeams";
 import HostNewTeamPage from "./pages/HostNewTeam";
 import GamesPage from "./pages/Games";
+import GameInfoPage from "./pages/GameInfo";
 import NewPlayerPage from "./pages/NewPlayer";
 import PartyTeamsPage from "./pages/PartyTeams";
 import PlayerNewTeamPage from "./pages/PlayerNewTeam";
@@ -26,6 +27,9 @@ function App() {
             break;
         case "games":
             currentPageContent = <GamesPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "gameInfo":
+            currentPageContent = <GameInfoPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "newPlayer":
             currentPageContent = <NewPlayerPage setCurrentPage={setCurrentPage} setErrors={setErrors} />

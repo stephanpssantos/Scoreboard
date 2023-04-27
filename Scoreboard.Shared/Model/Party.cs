@@ -12,6 +12,7 @@ namespace Scoreboard.Shared.Model
         [Required]
         [StringLength(50, MinimumLength = 3)]
         public string? PartyName { get; set; }
+        public string? PartyHostId { get; set; }
         public PartySettings PartySettings { get; set; } = new();
         public Team[]? Teams { get; set; }
         public Game[]? Games { get; set; }
@@ -21,9 +22,6 @@ namespace Scoreboard.Shared.Model
     public class PartyExtended : Party
     {
         public new PlayerExtended[]? Players { get; set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? PartyHostId { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? PartyHostCode { get; set; }
@@ -38,7 +36,6 @@ namespace Scoreboard.Shared.Model
         // For forced conversion to parent class
         public Party ToParty()
         {
-            this.PartyHostId = null;
             this.PartyHostCode = null;
             this.PartyCreatedDate = null;
             this.PartyEndDate = null;
