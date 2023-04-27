@@ -1,0 +1,24 @@
+.gameInfoPage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.gameInfoPage__container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gameInfoPage__instructions {
+    width: 100%;
+}
+
+.gameInfoPage__spacer {
+    height: 2px;
+    width: 100%;
+    background-color: #777;
+}

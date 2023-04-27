@@ -170,6 +170,39 @@ namespace Scoreboard.Shared
                 // Note that after creating the item, we can access the body of the item with the Resource property off the ItemResponse. We can also access the RequestCharge property to see the amount of RUs consumed on this request.
                 Console.WriteLine("Created item in database with id: {0} Operation consumed {1} RUs.\n", p1g1Response.Resource.Id, p1g1Response.RequestCharge);
             }
+
+            try
+            {
+                ItemResponse<GameExtended> p1g2Response = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(party1Game2.Id, new PartitionKey(party1Game2.PartyId));
+                Console.WriteLine("Item in database with id: {0} already exists\n", p1g2Response.Resource.Id);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                ItemResponse<GameExtended> p1g2Response = await this.context.GetGameContainer().CreateItemAsync<GameExtended>(party1Game2, new PartitionKey(party1Game2.PartyId));
+                Console.WriteLine("Created item in database with id: {0} Operation consumed {1} RUs.\n", p1g2Response.Resource.Id, p1g2Response.RequestCharge);
+            }
+
+            try
+            {
+                ItemResponse<GameExtended> p1g3Response = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(party1Game3.Id, new PartitionKey(party1Game3.PartyId));
+                Console.WriteLine("Item in database with id: {0} already exists\n", p1g3Response.Resource.Id);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                ItemResponse<GameExtended> p1g3Response = await this.context.GetGameContainer().CreateItemAsync<GameExtended>(party1Game3, new PartitionKey(party1Game3.PartyId));
+                Console.WriteLine("Created item in database with id: {0} Operation consumed {1} RUs.\n", p1g3Response.Resource.Id, p1g3Response.RequestCharge);
+            }
+
+            try
+            {
+                ItemResponse<GameExtended> p1g4Response = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(party1Game4.Id, new PartitionKey(party1Game4.PartyId));
+                Console.WriteLine("Item in database with id: {0} already exists\n", p1g4Response.Resource.Id);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                ItemResponse<GameExtended> p1g4Response = await this.context.GetGameContainer().CreateItemAsync<GameExtended>(party1Game4, new PartitionKey(party1Game4.PartyId));
+                Console.WriteLine("Created item in database with id: {0} Operation consumed {1} RUs.\n", p1g4Response.Resource.Id, p1g4Response.RequestCharge);
+            }
         }
 
         public async Task Clear()
