@@ -192,6 +192,22 @@ function joinTeamNoRetry(joinTeamOptions) {
     });
 }
 
+function joinGameNoRetry(joinGameOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Game/joinGame/"
+            + joinGameOptions.gameId
+            + "?playerId="
+            + joinGameOptions.playerId
+            + "&rejoinCode="
+            + joinGameOptions.rejoinCode;
+
+        fetch(url, { method: 'POST' })
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    });
+}
+
 function rejoinPartyNoRetry(rejoinOptions) {
     return new Promise((resolve, reject) => {
         let url = process.env.REACT_APP_API_BASEURL
@@ -270,6 +286,12 @@ function joinTeam(joinTeamOptions) {
     });
 }
 
+function joinGame(joinGameOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(joinGameNoRetry, joinGameOptions, resolve, reject)
+    });
+}
+
 function rejoinParty(rejoinOptions) {
     return new Promise((resolve, reject) => {
         retryCall(rejoinPartyNoRetry, rejoinOptions, resolve, reject)
@@ -282,6 +304,6 @@ function updateGameScore(updateGameScoreOptions) {
     });
 }
 
-let dataContext = { getParty, getGame, newParty, newHost, newPlayer, newTeam, joinTeam, rejoinParty, updateGameScore };
+let dataContext = { getParty, getGame, newParty, newHost, newPlayer, newTeam, joinTeam, joinGame, rejoinParty, updateGameScore };
 
 export default dataContext;

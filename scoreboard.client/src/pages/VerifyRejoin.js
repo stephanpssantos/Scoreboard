@@ -3,7 +3,7 @@ import dataContext from "../dataContext";
 import "./VerifyRejoin.css";
 
 function VerifyRejoinPage({ setCurrentPage, setErrors }) {
-    const [rejoinDisabled, setRejoinDisabled] = useState(true);
+    const [rejoinDisabled, setRejoinDisabled] = useState(false);
     const [isInvalid, setIsInvalid] = useState(false);
 
     let playerInfo = localStorage.getItem("player");
@@ -42,6 +42,8 @@ function VerifyRejoinPage({ setCurrentPage, setErrors }) {
 
         if (typeof input !== "string") {
             return;
+        } else if (input.length === 0 && rejoinDisabled) {
+            setRejoinDisabled(false);
         } else if (input.length !== 5 && !rejoinDisabled) {
             setRejoinDisabled(true);
         } else if (input.length === 5 && rejoinDisabled) {

@@ -78,7 +78,8 @@ function PlayerScores({ gameInfo, setGameInfo, setErrors, setCurrentPage }) {
     }
 
     let playerList = [];
-    gameInfo.scores.sort((a, b) => b.score - a.score);
+    //Uncomment to update rankings immediately.
+    //gameInfo.scores.sort((a, b) => b.score - a.score);
 
     for (let i = 0; i < gameInfo.scores.length; i++) {
         let key = "gameInfo_score-" + i;

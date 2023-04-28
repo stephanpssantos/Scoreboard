@@ -41,7 +41,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> CheckRejoinCode(string id, string playerId, string rejoinCode)
+        public async Task<IActionResult> CheckRejoinCode(string id, string playerId, string rejoinCode = "")
         {
             ItemResponse<PartyExtended> partyInfo;
 

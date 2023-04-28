@@ -26,7 +26,8 @@ namespace Scoreboard.API.Controllers
             try
             {
                 string partyId = id.Substring(0, 5);
-                ItemResponse<GameExtended> response = await this.context.GetGameContainer().ReadItemAsync<GameExtended>(id, new PartitionKey(partyId));
+                ItemResponse<GameExtended> response = await this.context.GetGameContainer()
+                    .ReadItemAsync<GameExtended>(id, new PartitionKey(partyId));
                 return this.Ok(response.Resource);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -64,7 +65,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> NewGame(string id, string gameName, string playerId, string rejoinCode)
+        public async Task<IActionResult> NewGame(string id, string gameName, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
@@ -120,7 +121,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> JoinGame(string id, string playerId, string rejoinCode)
+        public async Task<IActionResult> JoinGame(string id, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
@@ -201,7 +202,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> UpdateGame(string id, GameExtended game, string playerId, string rejoinCode)
+        public async Task<IActionResult> UpdateGame(string id, GameExtended game, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
@@ -256,7 +257,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> UpdateScore(string id, int score, string playerUpdateId, string playerId, string rejoinCode)
+        public async Task<IActionResult> UpdateScore(string id, int score, string playerUpdateId, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
@@ -354,7 +355,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteGame(string id, string playerId, string rejoinCode)
+        public async Task<IActionResult> DeleteGame(string id, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
