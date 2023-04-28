@@ -6,6 +6,7 @@ import "./GameInfo.css";
 function GameInfoPage({ setCurrentPage, setErrors }) {
     const [loadedGameInfo, setLoadedGameInfo] = useState({
         gameLoaded: false,
+        playerInfo: {},
         instructions: "Enter instructions for how the game is played and scored",
         name: "New game"
     });
@@ -34,6 +35,8 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
             })
             .then((response) => {
                 response.gameLoaded = true;
+                response.playerInfo = playerInfo;
+                response.isHost = isHost;
                 setLoadedGameInfo(response);
             })
             .catch(err => {
@@ -57,7 +60,12 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                 <p>{loadedGameInfo.instructions}</p>
             </div>
             <div className="gameInfoPage__spacer" />
-            <PlayerScores gameInfo={loadedGameInfo} />
+            <PlayerScores
+                gameInfo={loadedGameInfo}
+                setGameInfo={setLoadedGameInfo}
+                setErrors={setErrors}
+                setCurrentPage={setCurrentPage}
+            />
         </div>
     );
 

@@ -208,6 +208,26 @@ function rejoinPartyNoRetry(rejoinOptions) {
     });
 }
 
+function updateGameScoreNoRetry(updateGameScoreOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Game/updateGameScore/"
+            + updateGameScoreOptions.gameId
+            + "?score="
+            + updateGameScoreOptions.score
+            + "&playerUpdateId="
+            + updateGameScoreOptions.playerUpdateId
+            + "&playerId="
+            + updateGameScoreOptions.playerId
+            + "&rejoinCode="
+            + updateGameScoreOptions.rejoinCode;
+
+        fetch(url, { method: 'PUT' })
+            .then(response => resolve(response))
+            .catch(err => reject(err));
+    });
+}
+
 function getParty(partyCode) {
     return new Promise((resolve, reject) => {
         retryCall(getPartyNoRetry, partyCode, resolve, reject);
@@ -256,6 +276,12 @@ function rejoinParty(rejoinOptions) {
     });
 }
 
-let dataContext = { getParty, getGame, newParty, newHost, newPlayer, newTeam, joinTeam, rejoinParty };
+function updateGameScore(updateGameScoreOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(updateGameScoreNoRetry, updateGameScoreOptions, resolve, reject)
+    });
+}
+
+let dataContext = { getParty, getGame, newParty, newHost, newPlayer, newTeam, joinTeam, rejoinParty, updateGameScore };
 
 export default dataContext;

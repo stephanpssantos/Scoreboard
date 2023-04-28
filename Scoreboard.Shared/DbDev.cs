@@ -93,13 +93,25 @@ namespace Scoreboard.Shared
                 Score = 3
             };
 
+            var party1Gamescore3 = new GameScore()
+            {
+                Player = party1Player5,
+                Score = 4
+            };
+
+            var party1Gamescore4 = new GameScore()
+            {
+                Player = party1Player4,
+                Score = 1
+            };
+
             var party1Game1 = new GameExtended()
             {
                 Id = "ABCDE-BKXDS",
                 PartyId = "ABCDE",
                 Name = "Karaoke",
                 Instructions = "Give yourself one point if you sing a song. Subtract a point if you sing a song from the forbidden list.",
-                Scores = new GameScore[] { party1Gamescore1, party1Gamescore2 }
+                Scores = new GameScore[] { party1Gamescore1, party1Gamescore2, party1Gamescore3, party1Gamescore4 }
             };
 
             var party1Game2 = new GameExtended()
