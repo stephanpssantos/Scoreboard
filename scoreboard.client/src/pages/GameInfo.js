@@ -11,6 +11,8 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         name: "New game"
     });
 
+    let scoreUpdater = "";
+
     useEffect(() => {
         let isHost = false;
         let isInGame = false;
@@ -20,6 +22,20 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         partyInfo = JSON.parse(partyInfo);
         playerInfo = JSON.parse(playerInfo);
         gameInfo = JSON.parse(gameInfo);
+        
+        if (partyInfo.partyHostId === playerInfo.playerId) {
+            scoreUpdater = "anyone";
+            isHost = true;
+        }
+        else if (partyInfo.partySettings.scoreUpdatedBy === "player") {
+            scoreUpdater = playerInfo.playerId;
+        }
+        else if (partyInfo.partySettings.scoreUpdatedBy === "anyone") {
+            scoreUpdater = "anyone";
+        }
+        else {
+            scoreUpdater = "";
+        }
 
         if (gameInfo && gameInfo.id) {
             dataContext.getGame(gameInfo.id)
@@ -28,9 +44,6 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
             })
             .then((response) => {
                 if (playerInfo && playerInfo.playerId) {
-                    if (partyInfo && partyInfo.partyHostId) {
-                        isHost = partyInfo.partyHostId === playerInfo.playerId ? true : false;
-                    }
                     if (response.scores && response.scores.length > 0) {
                         response.scores.sort((a, b) => b.score - a.score);
                         let foundGameScore = response.scores.find(x => x.player.id === playerInfo.playerId);
@@ -44,6 +57,7 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                 response.playerInfo = playerInfo;
                 response.isHost = isHost;
                 response.isInGame = isInGame;
+                response.scoreUpdater = scoreUpdater;
                 setLoadedGameInfo(response);
             })
             .catch(err => {

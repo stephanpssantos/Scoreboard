@@ -83,6 +83,7 @@ function PlayerScores({ gameInfo, setGameInfo, setErrors, setCurrentPage }) {
 
     for (let i = 0; i < gameInfo.scores.length; i++) {
         let key = "gameInfo_score-" + i;
+        let scoreButtonsVisible = false;
         let ranking;
         switch (i) {
             case 0:
@@ -98,6 +99,9 @@ function PlayerScores({ gameInfo, setGameInfo, setErrors, setCurrentPage }) {
                 ranking = <h4 className="m-0 textShadow">{i + 1}</h4>
                 break;
         }
+        if (gameInfo.scoreUpdater === "anyone" || gameInfo.scores[i].player.id === gameInfo.scoreUpdater) {
+            scoreButtonsVisible = true;
+        }
         playerList.push(
             <div key={key} className="playerScores__score">
                 <div className="playerScores__ranking">
@@ -112,11 +116,15 @@ function PlayerScores({ gameInfo, setGameInfo, setErrors, setCurrentPage }) {
                         <h4 className="m-0 textShadow">{gameInfo.scores[i].player.name}</h4>
                     </div>
                     <div className="playerScores__scoreButtons">
-                        <button className="playerScores__scoreButton" onClick={() => {
+                        <button className="playerScores__scoreButton"
+                            style={{ visibility: scoreButtonsVisible ? "visible" : "hidden" }}
+                            onClick={() => {
                             queueUpdateScore(gameInfo.scores[i], -1);
                         }}>-</button>
                         <h4 className="m-0 textShadow">{gameInfo.scores[i].score}</h4>
-                        <button className="playerScores__scoreButton" onClick={() => {
+                        <button className="playerScores__scoreButton"
+                            style={{ visibility: scoreButtonsVisible ? "visible" : "hidden" }}
+                            onClick={() => {
                             queueUpdateScore(gameInfo.scores[i], 1);
                         }}>+</button>
                     </div>

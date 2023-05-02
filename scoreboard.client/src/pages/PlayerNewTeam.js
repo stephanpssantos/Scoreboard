@@ -18,6 +18,8 @@ function PlayerNewTeamPage({ setCurrentPage, setErrors }) {
         dataContext.newTeam(newTeamOptions)
         .then(response => response.json())
         .then(response => {
+            playerInfo.color = teamInfo.color;
+            localStorage.setItem("player", JSON.stringify(playerInfo));
             localStorage.setItem("party", JSON.stringify(response));
             setCurrentPage("games");
         })

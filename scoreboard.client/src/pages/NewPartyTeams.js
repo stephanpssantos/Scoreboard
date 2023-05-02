@@ -23,7 +23,11 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
         setRequestSent(true);
 
         dataContext.joinTeam(joinTeamOptions)
+        .then(response => response.json())
         .then(response => {
+            let team = response.teams.find(x => x.id === selectedTeam);
+            playerInfo.color = team.color ?? "#FFFFFF";
+            localStorage.setItem("player", JSON.stringify(playerInfo));
             setCurrentPage("games");
         })
         .catch(err => {

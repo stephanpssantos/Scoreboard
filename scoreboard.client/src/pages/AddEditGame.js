@@ -55,7 +55,7 @@ function AddEditGamePage({ setCurrentPage, setErrors }) {
                                 id: response.id,
                                 name: response.name
                             };
-                            let games = partyInfo.games;
+                            let games = partyInfo.games ?? [];
 
                             localStorage.setItem("game", JSON.stringify(response));
                             games.push(newGame);
