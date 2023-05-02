@@ -12,7 +12,6 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
     });
 
     useEffect(() => {
-        console.log("useEffect");
         let isHost = false;
         let isInGame = false;
         let partyInfo = localStorage.getItem("party");
@@ -86,6 +85,16 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         });
     }
 
+    function editGame() {
+        let updatedGameInfo = {
+            id: loadedGameInfo.id,
+            name: loadedGameInfo.name,
+            instructions: loadedGameInfo.instructions
+        };
+        localStorage.setItem("game", JSON.stringify(updatedGameInfo));
+        setCurrentPage("addEditGame");
+    }
+
     let loadingScreen = (
         <div>
             Loading game...
@@ -113,6 +122,12 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         <div className="gameInfoPage">
             {loadedGameInfo.gameLoaded ? loadedScreen : loadingScreen}
             <div className="gameInfoPage__buttons">
+                <button type="button"
+                    className="buttonInput defaultInputWidth"
+                    hidden={!loadedGameInfo.isHost}
+                    onClick={editGame}>
+                    <strong>EDIT GAME</strong>
+                </button>
                 <button type="button"
                     className="buttonInput defaultInputWidth"
                     hidden={loadedGameInfo.isInGame}

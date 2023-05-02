@@ -132,7 +132,7 @@ function AddEditGamePage({ setCurrentPage, setErrors }) {
                         <ErrorMessage name="name" component="div" className="errorMessage" />
                         <Field type="text" name="name" className="textInput centerText" placeholder={gameInfo.name ?? ""} />
                         <span className="mt-1">INSTRUCTIONS</span>
-                        <ErrorMessage name="name" component="div" className="errorMessage" />
+                        <ErrorMessage name="instructions" component="div" className="errorMessage" />
                         <Field as={"textarea"} name="instructions" className="textInput centerText" rows="4" placeholder={gameInfo.instructions ?? ""} />
                         <button type="submit" disabled={isSubmitting} className="buttonInput mt-2">
                             <strong>SAVE</strong>
