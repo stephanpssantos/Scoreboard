@@ -419,7 +419,60 @@ namespace Scoreboard.API.Controllers
             }
         }
 
-        // Update Party (settings)
+        // Update Party Games
+        // PUT: api/party/updateGames/[id]?playerId=[playerId]&rejoinCode=[rejoinCode]
+        [HttpPut("updateGames/{id:length(5)}", Name = nameof(UpdatePartyGames))]
+        [ProducesResponseType(201, Type = typeof(Party))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(409)]
+        public async Task<IActionResult> UpdatePartyGames([FromBody] Game[] games,
+            string id, string playerId, string rejoinCode)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
+
+            ItemResponse<PartyExtended> partyInfo;
+
+            // Party id not found
+            try
+            {
+                partyInfo = await this.context.GetPartyContainer()
+                    .ReadItemAsync<PartyExtended>(id, new PartitionKey(id));
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return this.NotFound();
+            }
+
+            // Player not host or rejoin code invalid
+            if (partyInfo.Resource.PartyHostId != playerId ||
+                !IdHelpers.CheckUserCode(partyInfo.Resource, playerId, rejoinCode))
+            {
+                return this.Unauthorized();
+            }
+
+            partyInfo.Resource.Games = games;
+            ItemRequestOptions requestOptions = new ItemRequestOptions { IfMatchEtag = partyInfo.ETag };
+
+            try
+            {
+                ItemResponse<PartyExtended> updatedPartyExtended = await this.context.GetPartyContainer()
+                    .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
+
+                Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                return this.Ok(updatedParty);
+            }
+            catch (CosmosException ex) when (
+                ex.StatusCode == HttpStatusCode.Conflict ||
+                ex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                return this.Conflict();
+            }
+        }
+
+        // Update Party Settings
         // PUT: api/party/updateSettings/[id]
         [HttpPut("updateSettings/{id:length(5)}", Name = nameof(UpdatePartySettings))]
         [ProducesResponseType(201, Type = typeof(Party))]

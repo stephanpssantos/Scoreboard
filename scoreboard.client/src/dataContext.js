@@ -174,6 +174,65 @@ function newTeamNoRetry(newTeamOptions) {
     });
 }
 
+function newGameNoRetry(newGameOptions) {
+    return new Promise((resolve, reject) => {
+        let newGameId = newGameOptions.partyId + "-" + generateId(5);
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Game/new/"
+            + newGameId
+            + "?playerId="
+            + newGameOptions.playerId
+            + "&rejoinCode="
+            + newGameOptions.playerRejoinCode;
+
+        let reqBody = {
+            name: newGameOptions.name,
+            instructions: newGameOptions.instructions
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then(response => {
+            resolve(response);
+        })
+        .catch(err => reject(err));
+    });
+}
+
+function updateGameNoRetry(updateGameOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Game/updateGame/"
+            + updateGameOptions.id
+            + "?playerId="
+            + updateGameOptions.playerId
+            + "&rejoinCode="
+            + updateGameOptions.rejoinCode;
+
+        let reqBody = {
+            name: updateGameOptions.name,
+            instructions: updateGameOptions.instructions
+        };
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reqBody)
+        })
+        .then(response => {
+            resolve(response);
+        })
+        .catch(err => reject(err));
+    });
+}
+
 function joinTeamNoRetry(joinTeamOptions) {
     return new Promise((resolve, reject) => {
         let url = process.env.REACT_APP_API_BASEURL
@@ -244,6 +303,30 @@ function updateGameScoreNoRetry(updateGameScoreOptions) {
     });
 }
 
+function updatePartyGamesNoRetry(updatePartyGamesOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Party/updateGames/"
+            + updatePartyGamesOptions.partyId
+            + "?playerId="
+            + updatePartyGamesOptions.playerId
+            + "&rejoinCode="
+            + updatePartyGamesOptions.rejoinCode;
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatePartyGamesOptions.games)
+        })
+        .then(response => {
+            resolve(response);
+        })
+        .catch(err => reject(err));
+    });
+}
+
 function getParty(partyCode) {
     return new Promise((resolve, reject) => {
         retryCall(getPartyNoRetry, partyCode, resolve, reject);
@@ -280,6 +363,12 @@ function newTeam(newTeamOptions) {
     });
 }
 
+function newGame(newGameOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(newGameNoRetry, newGameOptions, resolve, reject)
+    });
+}
+
 function joinTeam(joinTeamOptions) {
     return new Promise((resolve, reject) => {
         retryCall(joinTeamNoRetry, joinTeamOptions, resolve, reject)
@@ -298,12 +387,38 @@ function rejoinParty(rejoinOptions) {
     });
 }
 
+function updateGame(updateGameOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(updateGameNoRetry, updateGameOptions, resolve, reject)
+    });
+}
+
 function updateGameScore(updateGameScoreOptions) {
     return new Promise((resolve, reject) => {
         retryCall(updateGameScoreNoRetry, updateGameScoreOptions, resolve, reject)
     });
 }
 
-let dataContext = { getParty, getGame, newParty, newHost, newPlayer, newTeam, joinTeam, joinGame, rejoinParty, updateGameScore };
+function updatePartyGames(updatePartyGamesOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(updatePartyGamesNoRetry, updatePartyGamesOptions, resolve, reject)
+    });
+}
+
+let dataContext = {
+    getParty,
+    getGame,
+    newParty,
+    newHost,
+    newPlayer,
+    newTeam,
+    newGame,
+    joinTeam,
+    joinGame,
+    rejoinParty,
+    updateGame,
+    updateGameScore,
+    updatePartyGames
+};
 
 export default dataContext;

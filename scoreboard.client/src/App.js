@@ -14,6 +14,7 @@ import PartyTeamsPage from "./pages/PartyTeams";
 import PlayerNewTeamPage from "./pages/PlayerNewTeam";
 import RejoinPartyPage from "./pages/RejoinParty";
 import VerifyRejoinPage from "./pages/VerifyRejoin";
+import AddEditGamePage from "./pages/AddEditGame";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("landing");
@@ -60,6 +61,9 @@ function App() {
             break;
         case "playerNewTeam":
             currentPageContent = <PlayerNewTeamPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "addEditGame":
+            currentPageContent = <AddEditGamePage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "landing":
         default:

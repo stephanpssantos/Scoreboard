@@ -50,8 +50,11 @@ function GamesPage({ setCurrentPage, setErrors }) {
             <div className="gamesPage__end">
                 {isHost ?
                     <button type="button"
-                    className="buttonInput defaultInputWidth"
-                    onClick={() => setCurrentPage("addGame")}>
+                        className="buttonInput defaultInputWidth"
+                        onClick={() => {
+                            localStorage.setItem("game", "");
+                            setCurrentPage("addEditGame");
+                        }}>
                         <strong>+ ADD GAME</strong>
                     </button> : null
                 }

@@ -65,7 +65,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> NewGame(string id, string gameName, string playerId, string rejoinCode = "")
+        public async Task<IActionResult> NewGame([FromBody] GameExtended game, string id, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
@@ -97,7 +97,8 @@ namespace Scoreboard.API.Controllers
             GameExtended newGame = new()
             {
                 Id = id,
-                Name = gameName,
+                Name = game.Name,
+                Instructions = game.Instructions,
                 PartyId = partyId
             };
 
@@ -202,7 +203,7 @@ namespace Scoreboard.API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
-        public async Task<IActionResult> UpdateGame(string id, GameExtended game, string playerId, string rejoinCode = "")
+        public async Task<IActionResult> UpdateGame([FromBody] GameExtended game, string id, string playerId, string rejoinCode = "")
         {
             string partyId = id.Substring(0, 5);
             ItemResponse<PartyExtended> partyInfo;
