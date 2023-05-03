@@ -15,6 +15,7 @@ import PlayerNewTeamPage from "./pages/PlayerNewTeam";
 import RejoinPartyPage from "./pages/RejoinParty";
 import VerifyRejoinPage from "./pages/VerifyRejoin";
 import AddEditGamePage from "./pages/AddEditGame";
+import ScoreboardPage from "./pages/Scoreboard";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("landing");
@@ -31,6 +32,9 @@ function App() {
             break;
         case "gameInfo":
             currentPageContent = <GameInfoPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "scoreboard":
+            currentPageContent = <ScoreboardPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "newPlayer":
             currentPageContent = <NewPlayerPage setCurrentPage={setCurrentPage} setErrors={setErrors} />

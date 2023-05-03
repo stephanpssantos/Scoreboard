@@ -64,6 +64,21 @@ function getGameNoRetry(gameId) {
     });
 }
 
+function getGameScoresNoRetry(partyId) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL + "/api/Game/scores/" + partyId;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => resolve(response))
+            .catch(err => reject(err));
+    });
+}
+
 function newPartyNoRetry(newPartyOptions) {
     return new Promise((resolve, reject) => {
         let newPartyId = generateId(5);
@@ -339,6 +354,12 @@ function getGame(gameId) {
     });
 }
 
+function getGameScores(partyId) {
+    return new Promise((resolve, reject) => {
+        retryCall(getGameScoresNoRetry, partyId, resolve, reject);
+    });
+}
+
 function newParty(newPartyOptions) {
     return new Promise((resolve, reject) => {
         retryCall(newPartyNoRetry, newPartyOptions, resolve, reject, 5, 0)
@@ -408,6 +429,7 @@ function updatePartyGames(updatePartyGamesOptions) {
 let dataContext = {
     getParty,
     getGame,
+    getGameScores,
     newParty,
     newHost,
     newPlayer,

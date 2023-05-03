@@ -26,6 +26,7 @@ function PartyTeamsPage({ setCurrentPage, setErrors }) {
         .then(response => {
             let team = response.teams.find(x => x.id === selectedTeam);
             playerInfo.color = team.color ?? "#FFFFFF";
+            localStorage.setItem("party", JSON.stringify(response));
             localStorage.setItem("player", JSON.stringify(playerInfo));
             setCurrentPage("games");
         })
