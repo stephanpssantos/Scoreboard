@@ -9,7 +9,9 @@ function PartyTeamsPage({ setCurrentPage, setErrors }) {
     const [sizeLimitReached, setSizeLimitReached] = useState(false);
 
     let playerInfo = localStorage.getItem("player");
+    let partyInfo = localStorage.getItem("party");
     playerInfo = JSON.parse(playerInfo);
+    partyInfo = JSON.parse(partyInfo);
 
     const joinTeam = () => {
         let joinTeamOptions = {
@@ -48,6 +50,7 @@ function PartyTeamsPage({ setCurrentPage, setErrors }) {
             <button type="button"
                 className="defaultInputWidth buttonInput mt-1"
                 disabled={requestSent ? true : false}
+                hidden={!partyInfo.partySettings.teamCreationEnabled}
                 onClick={() => setCurrentPage("playerNewTeam")}>
                 <strong>+ NEW TEAM</strong>
             </button>

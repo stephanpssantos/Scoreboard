@@ -11,9 +11,8 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         name: "New game"
     });
 
-    let scoreUpdater = "";
-
     useEffect(() => {
+        let scoreUpdater = "";
         let isHost = false;
         let isInGame = false;
         let partyInfo = localStorage.getItem("party");

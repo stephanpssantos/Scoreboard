@@ -129,7 +129,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
             setErrors(err.toString());
             setCurrentPage("errors");
         });
-    }, []);
+    }, [partyInfo.id, setCurrentPage, setErrors]);
 
     return (
         <div className="scoreboardPage">
