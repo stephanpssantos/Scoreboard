@@ -40,6 +40,7 @@ function PartyTeamsPage({ setCurrentPage, setErrors }) {
 
     return (
         <div className="partyTeamsPage">
+            <h1 className="pageTitle centerText">Teams</h1>
             <TeamsList setSelectedTeam={setSelectedTeam} setSizeLimitReached={setSizeLimitReached} />
             <button type="button"
                 className="defaultInputWidth buttonInput mt-1"

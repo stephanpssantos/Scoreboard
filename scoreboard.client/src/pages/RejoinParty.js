@@ -36,9 +36,12 @@ function RejoinPartyPage({ setCurrentPage, setErrors }) {
 
     return (
         <div className="rejoinPartyPage">
-            <div className="rejoinPartyPage__list">
-                <span>PLAYERS</span>
-                { playerList.length < 1 ? <h4>No players in this party</h4> : playerList }
+            <div className="rejoinPartyPage__center">
+                <h1 className="pageTitle">Rejoining {partyInfo.partyName}</h1>
+                <div className="rejoinPartyPage__list">
+                    <span>PLAYERS</span>
+                    {playerList.length < 1 ? <h4>No players in this party</h4> : playerList}
+                </div>
             </div>
             <button type="button"
                 className="defaultInputWidth buttonInput"

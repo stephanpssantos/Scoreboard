@@ -35,6 +35,7 @@ function NewTeamForm({ submitForm }) {
             >
                 {({ isSubmitting }) => (
                     <Form className="newTeamForm__container defaultInputWidth">
+                        <h1 className="pageTitle centerText">New Team</h1>
                         <span>TEAM NAME</span>
                         <ErrorMessage name="teamName" component="div" className="errorMessage" />
                         <Field type="text" name="teamName" className="textInput centerText mb-1" placeholder="TEAM NAME" />

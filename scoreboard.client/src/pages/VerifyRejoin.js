@@ -52,8 +52,9 @@ function VerifyRejoinPage({ setCurrentPage, setErrors }) {
     }
 
     let pageContent = (
-        <div className="verifyRejoinPage__container defaultInputWidth">
-            <span>ENTER REJOIN CODE FOR {playerName.toUpperCase()}</span>
+        <div className="verifyRejoinPage__container defaultInputWidth centerText">
+            <h1 className="pageTitle">{playerName}</h1>
+            <span>ENTER REJOIN CODE</span>
             <input id="rejoinCodeInput"
                 type="text"
                 className="textInput centerText mt-2"

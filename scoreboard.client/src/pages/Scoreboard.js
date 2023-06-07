@@ -47,7 +47,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
         sortedUserTally.sort((a, b) => b.score - a.score);
 
         if (partyInfo.partySettings.hasTeams) {
-            partyInfo.teams.sort((a, b) => b.score - a.score);
+            partyInfo.teams.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
             for (let i = 0; i < partyInfo.teams.length; i++) {
                 let key = "teamScore__key-" + i;
@@ -75,7 +75,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
                             <div className="scoreboardPage__teamInfo">
                                 <h4 className="m-0 textShadow">{partyInfo.teams[i].name}</h4>
                             </div>
-                            <h2 className="scoreboardPage__score m-0 textShadow">{partyInfo.teams[i].score}</h2>
+                            <h2 className="scoreboardPage__score m-0 textShadow">{partyInfo.teams[i].score ?? 0}</h2>
                         </div>
                     </div>
                 );
@@ -113,7 +113,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
                             </div>
                             <h4 className="m-0 textShadow">{sortedUserTally[i].name}</h4>
                         </div>
-                        <h2 className="scoreboardPage__score m-0 textShadow">{sortedUserTally[i].score}</h2>
+                        <h2 className="scoreboardPage__score m-0 textShadow">{sortedUserTally[i].score ?? 0}</h2>
                     </div>
                 </div>
             );
@@ -134,7 +134,8 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
     return (
         <div className="scoreboardPage">
             <div className="scoreboardPage__container">
-                <h2>{partyInfo.partyName}</h2>
+                <h1 className="pageTitle m-0">{partyInfo.partyName}</h1>
+                <h2 className="m-0">Scoreboard</h2>
                 <div className="scoreboardPage__header">
                     {partyInfo.partySettings.hasTeams ? <h5>Team Scores</h5> : ""}
                     <h5>Player Scores</h5>

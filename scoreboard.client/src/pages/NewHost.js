@@ -46,10 +46,13 @@ function NewHostPage({ setCurrentPage, setErrors }) {
     return (
         <div className="newHostPage">
             <div />
-            <NewPlayerForm
-                newPlayerSubmitted={newPlayerSubmitted}
-                rejoinCodeRequired={true}
-                teamsEnabled={teamsEnabled} />
+            <div>
+                <h1 className="pageTitle centerText">Host Info</h1>
+                <NewPlayerForm
+                    newPlayerSubmitted={newPlayerSubmitted}
+                    rejoinCodeRequired={true}
+                    teamsEnabled={teamsEnabled} />
+            </div>
             <button type="button"
                 className="defaultInputWidth buttonInput"
                 onClick={() => setCurrentPage("newParty")}>

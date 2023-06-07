@@ -46,19 +46,22 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
     return (
         <div className="newPlayerPage">
             <div />
-            <div className="newPlayerPage__container">
-                <NewPlayerForm
-                    newPlayerSubmitted={newPlayerSubmitted}
-                    rejoinCodeRequired={false}
-                    teamsEnabled={teamsEnabled} />
-                <div className="newPlayerPage__container--space">
-                    <span>OR</span>
+            <div className="newPlayerPage__center">
+                <h1 className="pageTitle">Join {partyInfo.partyName}</h1>
+                <div className="newPlayerPage__container">
+                    <NewPlayerForm
+                        newPlayerSubmitted={newPlayerSubmitted}
+                        rejoinCodeRequired={false}
+                        teamsEnabled={teamsEnabled} />
+                    <div className="newPlayerPage__container--space">
+                        <span>OR</span>
+                    </div>
+                    <button type="button"
+                        className="buttonInput defaultInputWidth"
+                        onClick={() => setCurrentPage("rejoinParty")}>
+                        <strong>REJOIN</strong>
+                    </button>
                 </div>
-                <button type="button"
-                    className="buttonInput defaultInputWidth"
-                    onClick={() => setCurrentPage("rejoinParty")}>
-                    <strong>REJOIN</strong>
-                </button>
             </div>
             <button type="button"
                 className="defaultInputWidth buttonInput"

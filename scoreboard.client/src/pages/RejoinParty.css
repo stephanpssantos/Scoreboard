@@ -6,8 +6,16 @@
     justify-content: space-around;
 }
 
+.rejoinPartyPage__center {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .rejoinPartyPage__list {
-    width: 60%;
+    width: 50%;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

@@ -10,7 +10,7 @@ function useForceUpdate() {
 function PartySettings({ partySettings, setPartySettings }) {
     const [bannerMessage, setBannerMessage] = useState("");
     const forceUpdate = useForceUpdate();
-    const showBanner = { visibility : bannerMessage === "" ? "hidden" : "visible" };
+    const showBanner = bannerMessage === "" ? true : false;
     const toggleTeam = () => {
         partySettings.hasTeams = !partySettings.hasTeams;
 
@@ -22,7 +22,7 @@ function PartySettings({ partySettings, setPartySettings }) {
 
     return (
         <div className="partySettings">
-            <div className="partySettings__banner" style={showBanner}>
+            <div className="partySettings__banner" hidden={showBanner}>
                 <h5>{bannerMessage}</h5>
             </div>
             <div className="partySettings__row">

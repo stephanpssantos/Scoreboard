@@ -44,6 +44,7 @@ function NewPartyPage({ setCurrentPage, setErrors }) {
             >
                 {({ isSubmitting }) => (
                     <Form className="newPartyPage__container defaultInputWidth">
+                        <h1 className="pageTitle centerText">New Party</h1>
                         <span>PARTY NAME</span>
                         <ErrorMessage name="partyName" component="div" className="errorMessage" />
                         <Field type="text" name="partyName" className="textInput centerText" placeholder="Party Name" />

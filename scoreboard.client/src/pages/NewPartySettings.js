@@ -38,7 +38,10 @@ function NewPartySettingsPage({ setCurrentPage, setErrors }) {
 
     return (
         <div className="newPartySettingsPage">
+            <div />
+
             <div className="newPartySettingsPage__container">
+                <h1 className="pageTitle">Party Settings</h1>
                 <PartySettings partySettings={partySettings} setPartySettings={setPartySettings} />
                 <button type="button"
                     id="newPartySettingsContinue"

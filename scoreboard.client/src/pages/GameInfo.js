@@ -53,6 +53,7 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                 }
 
                 response.gameLoaded = true;
+                response.partyName = partyInfo.partyName;
                 response.playerInfo = playerInfo;
                 response.isHost = isHost;
                 response.isInGame = isInGame;
@@ -116,7 +117,8 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
 
     let loadedScreen = (
         <div className="gameInfoPage__container">
-            <h4>{loadedGameInfo.name}</h4>
+            <h1 className="pageTitle mb-0">{loadedGameInfo.partyName}</h1>
+            <h2 className="mt-1 mb-1">{loadedGameInfo.name}</h2>
             <div className="gameInfoPage__instructions">
                 <span>Instructions</span>
                 <p>{loadedGameInfo.instructions}</p>

@@ -128,6 +128,7 @@ function AddEditGamePage({ setCurrentPage, setErrors }) {
             >
                 {({ isSubmitting }) => (
                     <Form className="addEditGamePage__form defaultInputWidth">
+                        <h1 className="pageTitle centerText">Game Info</h1>
                         <span>GAME NAME</span>
                         <ErrorMessage name="name" component="div" className="errorMessage" />
                         <Field type="text" name="name" className="textInput centerText" placeholder={gameInfo.name ?? ""} />

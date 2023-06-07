@@ -5,6 +5,7 @@ import './Landing.css';
 function LandingPage({ setCurrentPage, setErrors }) {
     return (
         <div className="landingPage">
+            <h1 className="pageTitle">Scoreboard App Name TBD</h1>
             <Formik
                 initialValues={{ partyCode: '' }}
                 validate={values => {

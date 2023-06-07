@@ -39,6 +39,7 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
 
     return (
         <div className="newPartyTeamsPage">
+            <h1 className="pageTitle">Teams</h1>
             <TeamsList setSelectedTeam={setSelectedTeam} setSizeLimitReached={() => null } />
             <button type="button"
                 className="defaultInputWidth buttonInput mt-1"
