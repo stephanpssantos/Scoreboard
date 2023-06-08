@@ -53,7 +53,7 @@ function NewHostPage({ setCurrentPage, setErrors }) {
                     teamsEnabled={teamsEnabled} />
             </div>
             <button type="button"
-                className="defaultInputWidth buttonInput"
+                className="defaultInputWidth buttonInput mt-1"
                 onClick={() => setCurrentPage("newParty")}>
                 <strong>BACK</strong>
             </button>

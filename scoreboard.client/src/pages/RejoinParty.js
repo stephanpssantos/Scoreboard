@@ -44,7 +44,7 @@ function RejoinPartyPage({ setCurrentPage, setErrors }) {
                 </div>
             </div>
             <button type="button"
-                className="defaultInputWidth buttonInput"
+                className="defaultInputWidth buttonInput mb-4"
                 onClick={() => setCurrentPage("newPlayer")}>
                 <strong>BACK</strong>
             </button>

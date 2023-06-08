@@ -95,7 +95,7 @@ function GamesPage({ setCurrentPage, setErrors }) {
                     <strong>SCOREBOARD</strong>
                 </button>
                 <button type="button"
-                    className="buttonInput defaultInputWidth"
+                    className="buttonInput defaultInputWidth mb-4"
                     onClick={() => {
                         localStorage.clear();
                         setCurrentPage("landing");

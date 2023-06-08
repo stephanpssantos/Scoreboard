@@ -48,7 +48,7 @@ function NewPartyTeamsPage({ setCurrentPage, setErrors }) {
                 <strong>JOIN TEAM</strong>
             </button>
             <button type="button"
-                className="defaultInputWidth buttonInput mt-1"
+                className="defaultInputWidth buttonInput mt-1 mb-2"
                 disabled={requestSent ? true : false}
                 onClick={() => setCurrentPage("hostNewTeam")}>
                 <strong>+ NEW TEAM</strong>

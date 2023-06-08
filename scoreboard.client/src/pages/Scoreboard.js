@@ -152,7 +152,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
                 </div>
             </div>
             <button type="button"
-                className="buttonInput defaultInputWidth"
+                className="buttonInput defaultInputWidth mb-4"
                 onClick={() => setCurrentPage("games")}>
                 <strong>BACK</strong>
             </button>
