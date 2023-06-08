@@ -1,8 +1,35 @@
+import { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import dataContext from "../dataContext";
 import './Landing.css';
 
 function LandingPage({ setCurrentPage, setErrors }) {
+    useEffect(() => {
+        let partyInfo = localStorage.getItem("party");
+        let playerInfo = localStorage.getItem("player");
+        partyInfo = JSON.parse(partyInfo);
+        playerInfo = JSON.parse(playerInfo);
+
+        if (partyInfo
+            && playerInfo
+            && partyInfo.id
+            && partyInfo.eTag
+            && playerInfo.rejoinCode !== undefined) {
+            if (playerInfo.color === "#FFFFFF" && partyInfo.partySettings.hasTeams) {
+                let team = partyInfo.teams.find(x => x.members.includes(playerInfo.playerId));
+
+                if (team) {
+                    setCurrentPage("games");
+                } else {
+                    setCurrentPage("partyTeams");
+                }
+            }
+            else {
+                setCurrentPage("games");
+            }
+        }
+    }, [setCurrentPage]);
+
     return (
         <div className="landingPage">
             <h1 className="pageTitle">Scoreboard App Name TBD</h1>
