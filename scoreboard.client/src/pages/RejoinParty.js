@@ -7,6 +7,8 @@ function RejoinPartyPage({ setCurrentPage, setErrors }) {
     let playerList = [];
 
     if (partyInfo !== undefined && partyInfo.players !== undefined) {
+        partyInfo.players.sort((a, b) => a.name.localeCompare(b.name));
+
         for (let i = 0; i < partyInfo.players.length; i++) {
             let key = "playersList_player-" + i;
             let playerColor = partyInfo.players[i].color ?? "#FFFFFF";
