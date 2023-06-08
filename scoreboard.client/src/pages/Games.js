@@ -14,6 +14,10 @@ function GamesPage({ setCurrentPage, setErrors }) {
     playerInfo = JSON.parse(playerInfo);
 
     useEffect(() => {
+        if (newPartyInfo) {
+            return;
+        }
+
         let getPartyOptions = {
             partyCode: partyInfo.id,
             eTag: partyInfo.eTag
@@ -32,7 +36,7 @@ function GamesPage({ setCurrentPage, setErrors }) {
                 })
             }
         })
-    }, [partyInfo.id, partyInfo.eTag])
+    }, [newPartyInfo, partyInfo.id, partyInfo.eTag])
 
     let gameList = [];
     let isHost = false;

@@ -7,8 +7,8 @@ namespace Scoreboard.Shared
     public class ScoreboardContext : IScoreboardContext
     {
         private readonly string databaseId = "db";
-        private readonly string partyContainerId = "party";
-        private readonly string gameContainerId = "game";
+        private readonly string partyContainerId = "sb_party";
+        private readonly string gameContainerId = "sb_game";
         private readonly CosmosClient cosmosClient;
         private Database? database;
         private Container? partyContainer;
