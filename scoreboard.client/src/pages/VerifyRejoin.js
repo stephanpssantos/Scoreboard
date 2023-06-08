@@ -22,8 +22,29 @@ function VerifyRejoinPage({ setCurrentPage, setErrors }) {
 
         dataContext.rejoinParty(playerInfo)
         .then(response => {
-            localStorage.setItem("player", JSON.stringify(playerInfo));
-            setCurrentPage("games");
+            let playerInfoString = JSON.stringify(playerInfo);
+            localStorage.setItem("player", playerInfoString);
+
+            // If player has not selected team, go to join teams page
+            if (playerInfo.color === "#FFFFFF") {
+                let partyInfo = localStorage.getItem("party");
+                partyInfo = JSON.parse(partyInfo);
+
+                if (partyInfo.partySettings.hasTeams) {
+                    let team = partyInfo.teams.find(x => x.members.includes(playerInfo.playerId));
+
+                    if (team) {
+                        setCurrentPage("games");
+                    } else {
+                        setCurrentPage("partyTeams");
+                    }
+                }
+                else {
+                    setCurrentPage("games");
+                }
+            } else {
+                setCurrentPage("games");
+            }
         })
         .catch(err => {
             if (err.raw.status === 401) {

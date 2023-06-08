@@ -3,8 +3,6 @@ using Scoreboard.Shared;
 using Scoreboard.Shared.Model;
 using Microsoft.Azure.Cosmos;
 using System.Net;
-using System.Globalization;
-using Azure;
 
 namespace Scoreboard.API.Controllers
 {
