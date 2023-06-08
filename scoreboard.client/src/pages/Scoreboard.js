@@ -126,7 +126,7 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
         .then(response => response.json())
         .then(response => setScores(response))
         .catch(err => {
-            setErrors(err.toString());
+            setErrors(err.code);
             setCurrentPage("errors");
         });
     }, [partyInfo.id, setCurrentPage, setErrors]);

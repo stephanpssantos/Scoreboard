@@ -64,7 +64,7 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                 if (err.code === 404) {
                     setCurrentPage("games");
                 } else {
-                    setErrors(err.toString());
+                    setErrors(err.code);
                     setCurrentPage("errors");
                 }
             });
@@ -98,7 +98,7 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
             setLoadedGameInfo(clone);
         })
         .catch(err => {
-            setErrors(err.toString());
+            setErrors(err.code);
             setCurrentPage("errors");
         });
     }

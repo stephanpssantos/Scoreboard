@@ -38,7 +38,7 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
             
         })
         .catch(err => {
-            setErrors(err.toString());
+            setErrors(err.code);
             setCurrentPage("errors");
         });
     };

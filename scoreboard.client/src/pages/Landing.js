@@ -30,9 +30,13 @@ function LandingPage({ setCurrentPage, setErrors }) {
                         setCurrentPage("newPlayer");
                     })
                     .catch(err => {
-                        setErrors(err.toString());
+                        if (err.code === 404) {
+                            setErrors("Party code not found.");
+                        }
+                        else {
+                            setErrors(err.code);
+                        }
                         setCurrentPage("errors");
-                        console.log(err);
                     });
                 }}
             >

@@ -37,9 +37,8 @@ function NewHostPage({ setCurrentPage, setErrors }) {
             }
         })
         .catch(err => {
-            setErrors(err.toString());
+            setErrors(err.code);
             setCurrentPage("errors");
-            console.log(err);
         });
     };
 

@@ -52,7 +52,7 @@ function DeleteGamePage({ setCurrentPage, setErrors }) {
                 setCurrentPage("games");
             })
             .catch(err => {
-                setErrors(err.toString());
+                setErrors(err.code);
                 setCurrentPage("errors");
             });
         }

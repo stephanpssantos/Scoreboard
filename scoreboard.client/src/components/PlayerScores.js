@@ -52,7 +52,7 @@ function PlayerScores({ gameInfo, setGameInfo, setErrors, setCurrentPage }) {
     function queueUpdateScore(playerScore, addend) {
         let cb = (resolve, reject) => {
             if (reject) {
-                setErrors(reject.toString());
+                setErrors(reject.code);
                 setCurrentPage("errors");
             }
             else {

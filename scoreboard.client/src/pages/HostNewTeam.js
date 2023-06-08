@@ -22,7 +22,7 @@ function HostNewTeamPage({ setCurrentPage, setErrors }) {
             setCurrentPage("newPartyTeams");
         })
         .catch(err => {
-            setErrors(err.toString());
+            setErrors(err.code);
             setCurrentPage("errors");
         })
     }

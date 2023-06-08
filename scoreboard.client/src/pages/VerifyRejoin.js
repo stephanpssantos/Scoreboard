@@ -30,9 +30,8 @@ function VerifyRejoinPage({ setCurrentPage, setErrors }) {
                 setIsInvalid(true);
             }
             else {
-                setErrors(err.toString());
+                setErrors(err.code);
                 setCurrentPage("errors");
-                console.log(err.raw);
             }
         });
     }
