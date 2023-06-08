@@ -73,7 +73,7 @@ namespace Scoreboard.API.Controllers
             {
                 return this.NotFound();
             }
-            else if (playerInfo.RejoinCode != rejoinCode)
+            else if (playerInfo.RejoinCode != null && playerInfo.RejoinCode.ToUpper() != rejoinCode.ToUpper())
             {
                 return this.Unauthorized();
             }
