@@ -29,3 +29,11 @@
     justify-content: center;
     gap: 0.5em;
 }
+
+.gameInfoPage__deleteButton {
+    background-color: #ff9999;
+}
+
+.gameInfoPage__deleteButton:hover:enabled {
+    background-color: #dd0000;
+}

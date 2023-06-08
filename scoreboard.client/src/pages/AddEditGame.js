@@ -120,7 +120,6 @@ function AddEditGamePage({ setCurrentPage, setErrors }) {
                         .catch(err => {
                             setErrors(err.toString());
                             setCurrentPage("errors");
-                            console.log(err);
                         });
                     }
                     

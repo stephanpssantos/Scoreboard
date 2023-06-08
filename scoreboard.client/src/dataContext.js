@@ -74,8 +74,8 @@ function getGameScoresNoRetry(partyId) {
                 'Content-Type': 'application/json',
             }
         })
-            .then(response => resolve(response))
-            .catch(err => reject(err));
+        .then(response => resolve(response))
+        .catch(err => reject(err));
     });
 }
 
@@ -313,8 +313,8 @@ function updateGameScoreNoRetry(updateGameScoreOptions) {
             + updateGameScoreOptions.rejoinCode;
 
         fetch(url, { method: 'PUT' })
-            .then(response => resolve(response))
-            .catch(err => reject(err));
+        .then(response => resolve(response))
+        .catch(err => reject(err));
     });
 }
 
@@ -334,6 +334,26 @@ function updatePartyGamesNoRetry(updatePartyGamesOptions) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatePartyGamesOptions.games)
+        })
+        .then(response => {
+            resolve(response);
+        })
+        .catch(err => reject(err));
+    });
+}
+
+function deleteGameNoRetry(deleteGameOptions) {
+    return new Promise((resolve, reject) => {
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Game/"
+            + deleteGameOptions.id
+            + "?playerId="
+            + deleteGameOptions.playerId
+            + "&rejoinCode="
+            + deleteGameOptions.rejoinCode;
+
+        fetch(url, {
+            method: 'DELETE',
         })
         .then(response => {
             resolve(response);
@@ -426,6 +446,12 @@ function updatePartyGames(updatePartyGamesOptions) {
     });
 }
 
+function deleteGame(deleteGameOptions) {
+    return new Promise((resolve, reject) => {
+        retryCall(deleteGameNoRetry, deleteGameOptions, resolve, reject)
+    });
+}
+
 let dataContext = {
     getParty,
     getGame,
@@ -440,7 +466,8 @@ let dataContext = {
     rejoinParty,
     updateGame,
     updateGameScore,
-    updatePartyGames
+    updatePartyGames,
+    deleteGame
 };
 
 export default dataContext;

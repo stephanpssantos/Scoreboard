@@ -15,6 +15,7 @@ import PlayerNewTeamPage from "./pages/PlayerNewTeam";
 import RejoinPartyPage from "./pages/RejoinParty";
 import VerifyRejoinPage from "./pages/VerifyRejoin";
 import AddEditGamePage from "./pages/AddEditGame";
+import DeleteGamePage from "./pages/DeleteGame";
 import ScoreboardPage from "./pages/Scoreboard";
 
 function App() {
@@ -65,6 +66,9 @@ function App() {
             break;
         case "playerNewTeam":
             currentPageContent = <PlayerNewTeamPage setCurrentPage={setCurrentPage} setErrors={setErrors} />
+            break;
+        case "deleteGame":
+            currentPageContent = <DeleteGamePage setCurrentPage={setCurrentPage} setErrors={setErrors} />
             break;
         case "addEditGame":
             currentPageContent = <AddEditGamePage setCurrentPage={setCurrentPage} setErrors={setErrors} />

@@ -1,0 +1,16 @@
+.deleteGamePage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteGamePage__deleteButton {
+    margin: 2em;
+    background-color: #ff9999;
+}
+
+.deleteGamePage__deleteButton:hover:enabled {
+    background-color: #dd0000;
+}

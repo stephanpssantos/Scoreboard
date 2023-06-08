@@ -61,8 +61,12 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                 setLoadedGameInfo(response);
             })
             .catch(err => {
-                setErrors(err.toString());
-                setCurrentPage("errors");
+                if (err.code === 404) {
+                    setCurrentPage("games");
+                } else {
+                    setErrors(err.toString());
+                    setCurrentPage("errors");
+                }
             });
         }
     }, [setCurrentPage, setErrors]);
@@ -109,6 +113,10 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
         setCurrentPage("addEditGame");
     }
 
+    function deleteGame() {
+        setCurrentPage("deleteGame");
+    }
+
     let loadingScreen = (
         <div>
             Loading game...
@@ -139,12 +147,6 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
             <div className="gameInfoPage__buttons">
                 <button type="button"
                     className="buttonInput defaultInputWidth"
-                    hidden={!loadedGameInfo.isHost}
-                    onClick={editGame}>
-                    <strong>EDIT GAME</strong>
-                </button>
-                <button type="button"
-                    className="buttonInput defaultInputWidth"
                     hidden={loadedGameInfo.isInGame}
                     onClick={joinGame}>
                     <strong>JOIN GAME</strong>
@@ -153,6 +155,18 @@ function GameInfoPage({ setCurrentPage, setErrors }) {
                     className="buttonInput defaultInputWidth"
                     onClick={() => setCurrentPage("games")}>
                     <strong>BACK</strong>
+                </button>
+                <button type="button"
+                    className="buttonInput defaultInputWidth"
+                    hidden={!loadedGameInfo.isHost}
+                    onClick={editGame}>
+                    <strong>EDIT GAME</strong>
+                </button>
+                <button type="button"
+                    className="buttonInput defaultInputWidth gameInfoPage__deleteButton"
+                    hidden={!loadedGameInfo.isHost}
+                    onClick={deleteGame}>
+                    <strong>DELETE GAME</strong>
                 </button>
             </div>
         </div>
