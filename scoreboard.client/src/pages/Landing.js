@@ -21,7 +21,11 @@ function LandingPage({ setCurrentPage, setErrors }) {
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
-                    dataContext.getParty(values.partyCode.toUpperCase())
+                    let getPartyOptions = {
+                        partyCode: values.partyCode.toUpperCase()
+                    };
+
+                    dataContext.getParty(getPartyOptions)
                     .then((response) => {
                         return response.json();
                     })

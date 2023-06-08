@@ -34,9 +34,13 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getPartyNoRetry(partyCode) {
+function getPartyNoRetry(getPartyOptions) {
     return new Promise((resolve, reject) => {
-        let url = process.env.REACT_APP_API_BASEURL + "/api/Party/" + partyCode;
+        let url = process.env.REACT_APP_API_BASEURL
+            + "/api/Party/"
+            + getPartyOptions.partyCode
+            + "?eTag="
+            + getPartyOptions.eTag;
 
         fetch(url, {
             method: 'GET',
@@ -362,9 +366,9 @@ function deleteGameNoRetry(deleteGameOptions) {
     });
 }
 
-function getParty(partyCode) {
+function getParty(getPartyOptions) {
     return new Promise((resolve, reject) => {
-        retryCall(getPartyNoRetry, partyCode, resolve, reject);
+        retryCall(getPartyNoRetry, getPartyOptions, resolve, reject);
     });
 }
 

@@ -4,6 +4,7 @@ using Scoreboard.Shared.Model;
 using Microsoft.Azure.Cosmos;
 using System.Net;
 using System.Globalization;
+using Azure;
 
 namespace Scoreboard.API.Controllers
 {
@@ -18,20 +19,28 @@ namespace Scoreboard.API.Controllers
             this.context = context;
         }
 
-        // GET: api/party/[id]
+        // GET: api/party/[id]?eTag=[eTag]
         [HttpGet("{id:length(5)}", Name = nameof(GetParty))]
         [ProducesResponseType(200, Type = typeof(Party))]
+        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetParty(string id)
+        public async Task<IActionResult> GetParty(string id, string eTag = "")
         {
             try
             {
-                ItemResponse<Party> response = await this.context.GetPartyContainer().ReadItemAsync<Party>(id, new PartitionKey(id));
+                ItemRequestOptions requestOptions = new ItemRequestOptions { IfNoneMatchEtag = eTag };
+                ItemResponse<Party> response = await this.context.GetPartyContainer().ReadItemAsync<Party>(id, new PartitionKey(id), requestOptions);
+
+                response.Resource.ETag = response.Headers.ETag;
                 return this.Ok(response.Resource);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 return this.NotFound();
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotModified)
+            {
+                return this.NoContent();
             }
         }
 
@@ -96,6 +105,8 @@ namespace Scoreboard.API.Controllers
                 ItemResponse<PartyExtended> partyResponse = await this.context.GetPartyContainer()
                     .CreateItemAsync<PartyExtended>(party, new PartitionKey(party.Id));
 
+                partyResponse.Resource.ETag = partyResponse.Headers.ETag;
+
                 return CreatedAtAction(nameof(GetParty), new { id = party.Id }, partyResponse.Resource);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
@@ -143,6 +154,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id));
 
             Party updatedParty = updatedPartyExtended.Resource.ToParty();
+            updatedParty.ETag = updatedPartyExtended.Headers.ETag;
             return this.Ok(updatedParty);
         }
 
@@ -198,6 +210,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
 
                 Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                updatedParty.ETag = updatedPartyExtended.Headers.ETag;
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (
@@ -304,6 +317,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
 
                 Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                updatedParty.ETag = updatedPartyExtended.Headers.ETag;
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (
@@ -409,6 +423,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
 
                 Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                updatedParty.ETag = updatedPartyExtended.Headers.ETag;
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (
@@ -462,6 +477,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
 
                 Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                updatedParty.ETag = updatedPartyExtended.Headers.ETag;
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (
@@ -518,6 +534,7 @@ namespace Scoreboard.API.Controllers
                     .UpsertItemAsync<PartyExtended>(partyInfo.Resource, new PartitionKey(id), requestOptions);
 
                 Party updatedParty = updatedPartyExtended.Resource.ToParty();
+                updatedParty.ETag = updatedPartyExtended.Headers.ETag;
                 return this.Ok(updatedParty);
             }
             catch (CosmosException ex) when (

@@ -1,7 +1,10 @@
-import { Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
+import dataContext from "../dataContext";
 import "./Games.css";
 
 function GamesPage({ setCurrentPage, setErrors }) {
+    const [newPartyInfo, setNewPartyInfo] = useState(false);
+
     const colorList = ["#ff6900", "#fcb900", "#7bdcb5", "#00d084", "#8ed1fc",
         "#0693e3", "#abb8c3", "#eb144c", "#f78da7", "#9900ef"];
 
@@ -9,6 +12,27 @@ function GamesPage({ setCurrentPage, setErrors }) {
     let playerInfo = localStorage.getItem("player");
     partyInfo = JSON.parse(partyInfo);
     playerInfo = JSON.parse(playerInfo);
+
+    useEffect(() => {
+        let getPartyOptions = {
+            partyCode: partyInfo.id,
+            eTag: partyInfo.eTag
+        };
+
+        dataContext.getParty(getPartyOptions)
+        .then(response => {
+            if (response.status === 204) {
+                // current party info already up to date
+                return;
+            } else {
+                response.json()
+                .then(responseJson => {
+                    localStorage.setItem("party", JSON.stringify(responseJson));
+                    setNewPartyInfo(true);
+                })
+            }
+        })
+    }, [partyInfo.id, partyInfo.eTag])
 
     let gameList = [];
     let isHost = false;

@@ -17,6 +17,7 @@ namespace Scoreboard.Shared.Model
         public Team[]? Teams { get; set; }
         public Game[]? Games { get; set; }
         public Player[]? Players { get; set; }
+        public string? ETag { get; set; }
     }
 
     public class PartyExtended : Party
