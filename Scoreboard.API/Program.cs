@@ -12,7 +12,7 @@ namespace Scoreboard.API
             string endpointURI;
             string primaryKey;
 
-            if (!builder.Environment.IsProduction())
+            if (builder.Environment.IsProduction())
             {
                 endpointURI = builder.Configuration.GetSection("Cosmos")["EndpointUri"]!;
                 primaryKey = builder.Configuration["Cosmos:PrimaryKey"]!;
