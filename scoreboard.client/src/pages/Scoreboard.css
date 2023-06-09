@@ -17,15 +17,15 @@
 
 .scoreboardPage__header {
     width: 100%;
-    display: flex;
-    justify-content: space-around;
-    border-bottom: 2px solid #777;
+    text-align: center;
 }
 
 .scoreboardPage__scores {
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     gap: 1em;
 }
 
@@ -96,4 +96,12 @@
     display: flex;
     align-items: center;
     margin-right: 0.5em;
+}
+
+@media (min-width: 768px) {
+    .scoreboardPage__scores {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+    }
 }

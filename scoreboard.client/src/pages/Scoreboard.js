@@ -134,19 +134,21 @@ function ScoreboardPage({ setCurrentPage, setErrors }) {
     return (
         <div className="scoreboardPage">
             <div className="scoreboardPage__container">
-                <h1 className="pageTitle m-0">{partyInfo.partyName}</h1>
+                <h1 className="pageTitle m-0 centerText">{partyInfo.partyName}</h1>
                 <h2 className="m-0">Scoreboard</h2>
-                <div className="scoreboardPage__header">
-                    {partyInfo.partySettings.hasTeams ? <h5>Team Scores</h5> : ""}
-                    <h5>Player Scores</h5>
-                </div>
                 <div className="scoreboardPage__scores">
                     {partyInfo.partySettings.hasTeams ?
                         <div className="scoreboardPage__teamScores">
+                            <div className="scoreboardPage__header">
+                                <h5>Team Scores</h5>
+                            </div>
                             {teamDomList}
                         </div>
                     : ""}
                     <div className="scoreboardPage__playerScores">
+                        <div className="scoreboardPage__header">
+                            <h5>Player Scores</h5>
+                        </div>
                         {userDomList}
                     </div>
                 </div>

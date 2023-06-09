@@ -32,7 +32,7 @@ function LandingPage({ setCurrentPage, setErrors }) {
 
     return (
         <div className="landingPage">
-            <h1 className="pageTitle">Scoreboard App Name TBD</h1>
+            <h1 className="pageTitle centerText">Scoreboard App Name TBD</h1>
             <Formik
                 initialValues={{ partyCode: '' }}
                 validate={values => {

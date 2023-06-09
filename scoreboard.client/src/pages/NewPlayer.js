@@ -47,7 +47,7 @@ function NewPlayerPage({ setCurrentPage, setErrors }) {
         <div className="newPlayerPage">
             <div />
             <div className="newPlayerPage__center">
-                <h1 className="pageTitle">Join {partyInfo.partyName}</h1>
+                <h1 className="pageTitle centerText">Join {partyInfo.partyName}</h1>
                 <div className="newPlayerPage__container">
                     <NewPlayerForm
                         newPlayerSubmitted={newPlayerSubmitted}

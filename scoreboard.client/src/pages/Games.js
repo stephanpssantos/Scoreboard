@@ -72,7 +72,7 @@ function GamesPage({ setCurrentPage, setErrors }) {
     return (
         <div className="gamesPage">
             <div className="gamesPage__container">
-                <h1 className="pageTitle mb-0">{partyInfo.partyName}</h1>
+                <h1 className="pageTitle mb-0 centerText">{partyInfo.partyName}</h1>
                 <h4 className="m-0 mb-1">PARTY CODE: {partyInfo.id}</h4>
                 {gameList}
             </div>

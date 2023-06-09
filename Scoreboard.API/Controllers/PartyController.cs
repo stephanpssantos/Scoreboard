@@ -302,7 +302,7 @@ namespace Scoreboard.API.Controllers
                 playerInfo.Color = team.Color;
             }
 
-            Team[] teamList = partyInfo.Resource.Teams ?? new Team[0];
+            Team[] teamList = partyInfo.Resource.Teams ?? Array.Empty<Team>();
             Array.Resize(ref teamList, teamList.Length + 1);
             teamList[teamList.Length - 1] = team;
 

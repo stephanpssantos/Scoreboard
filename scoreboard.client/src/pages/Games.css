@@ -14,7 +14,7 @@
 }
 
 .gamesPage__game {
-    width: 60%;
+    width: 80%;
     padding: 0.5em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -39,7 +39,7 @@
 
 .gamesPage__gameSpacer {
     height: 2px;
-    width: 60%;
+    width: 80%;
     background-color: #777;
 }
 
@@ -48,4 +48,14 @@
     display: flex;
     flex-direction: column;
     gap: 1em;
+}
+
+@media (min-width: 768px) {
+    .gamesPage__game {
+        width: 60%;
+    }
+
+    .gamesPage__gameSpacer {
+        width: 60%;
+    }
 }
