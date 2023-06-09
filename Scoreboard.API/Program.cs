@@ -9,8 +9,20 @@ namespace Scoreboard.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            string endpointURI = builder.Configuration.GetSection("Cosmos")["EndpointUri"]!;
-            string primaryKey = builder.Configuration["Cosmos:PrimaryKey"]!;
+            string endpointURI;
+            string primaryKey;
+
+            if (!builder.Environment.IsProduction())
+            {
+                endpointURI = builder.Configuration.GetSection("Cosmos")["EndpointUri"]!;
+                primaryKey = builder.Configuration["Cosmos:PrimaryKey"]!;
+            }
+            else
+            {
+                endpointURI = builder.Configuration.GetSection("Cosmos")["DevEndpointUri"]!;
+                primaryKey = builder.Configuration["Cosmos:DevPrimaryKey"]!;
+            }
+            
             builder.Services.AddSingleton<IScoreboardContext>(s => new ScoreboardContext(endpointURI, primaryKey));
             builder.Services.AddHostedService<DbInitializer>();
             builder.Services.AddControllers();

@@ -37,7 +37,7 @@ namespace Scoreboard.Shared
 
             PlayerExtended? player = party.Players.Where(x => x.Id== playerId).FirstOrDefault();
 
-            if (player == null || (player.RejoinCode != null && player.RejoinCode != rejoinCode))
+            if (player == null || (player.RejoinCode != null && player.RejoinCode.ToUpper() != rejoinCode.ToUpper()))
             {
                 return false;
             }
