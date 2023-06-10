@@ -15,12 +15,12 @@ namespace Scoreboard.API
             if (builder.Environment.IsProduction())
             {
                 endpointURI = builder.Configuration.GetSection("Cosmos")["EndpointUri"]!;
-                primaryKey = builder.Configuration["Cosmos:PrimaryKey"]!;
+                primaryKey = builder.Configuration["Cosmos_PrimaryKey"]!;
             }
             else
             {
                 endpointURI = builder.Configuration.GetSection("Cosmos")["DevEndpointUri"]!;
-                primaryKey = builder.Configuration["Cosmos:DevPrimaryKey"]!;
+                primaryKey = builder.Configuration["Cosmos_DevPrimaryKey"]!;
             }
             
             builder.Services.AddSingleton<IScoreboardContext>(s => new ScoreboardContext(endpointURI, primaryKey));
