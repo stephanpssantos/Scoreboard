@@ -1,0 +1,20 @@
+{
+  "navigationFallback": {
+    "rewrite": "index.html"
+  },
+  "platform": { "apiRuntime": "node:16" },
+  "mimeTypes": {
+    ".json": "text/json",
+    ".html": "text/html",
+    ".svg": "image/svg+xml",
+    ".css": "text/css",
+    ".png": "image/png"
+  },
+  "routes": [
+    {
+      "route": "/api/*",
+      "allowedRoles": [ "anonymous" ],
+      "methods": [ "GET", "POST", "PUT", "DELETE" ]
+    }
+  ]
+}
