@@ -61,6 +61,10 @@ namespace Scoreboard.API
                 app.UseSwaggerUI();
                 app.UseCors();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
