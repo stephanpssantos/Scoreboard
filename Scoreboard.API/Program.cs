@@ -33,9 +33,7 @@ namespace Scoreboard.API
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.WithOrigins(builder.Configuration["ClientAddress"]!)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                        .AllowAnyMethod();
                 });
             });
 
@@ -50,9 +48,9 @@ namespace Scoreboard.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseCors();
             }
 
+            app.UseCors();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
