@@ -33,6 +33,7 @@ namespace Scoreboard.API
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.WithOrigins(builder.Configuration["ClientAddress"]!)
+                        .WithHeaders("Content-Type")
                         .AllowAnyMethod();
                 });
             });
