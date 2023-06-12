@@ -10,6 +10,6 @@ RUN dotnet publish Scoreboard.API/Scoreboard.API.csproj -c Release -o /Publish
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as runtime
 WORKDIR /Publish
 COPY --from=build-env /Publish .
-EXPOSE 5089 7028
-ENV ASPNETCORE_URLS=http://+:5089
+EXPOSE 7028
+ENV ASPNETCORE_URLS=http://+:7028
 ENTRYPOINT ["dotnet", "Scoreboard.API.dll"]
