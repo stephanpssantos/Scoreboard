@@ -43,10 +43,7 @@ function getPartyNoRetry(getPartyOptions) {
             + getPartyOptions.eTag;
 
         fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            method: 'GET'
         })
         .then(response => resolve(response))
         .catch(err => reject(err));
