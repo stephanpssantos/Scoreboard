@@ -4,7 +4,7 @@
   },
   "platform": { "apiRuntime": "node:16" },
   "globalHeaders": {
-    "content-security-policy": "default-src https:; connect-src 'self' https://scoreboard-api.greenwave-01782167.westus2.azurecontainerapps.io; script-src 'nonce-{random}'; object-src 'none'"
+    "content-security-policy": "default-src https:; connect-src 'self' https://scoreboard-api.greenwave-01782167.westus2.azurecontainerapps.io; script-src 'self'; object-src 'none'"
   },
   "mimeTypes": {
     ".json": "text/json",
