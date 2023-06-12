@@ -5,7 +5,7 @@
   "platform": { "apiRuntime": "node:16" },
   "globalHeaders": {
     "Access-Control-Allow-Origin": "https://scoreboard-api.greenwave-01782167.westus2.azurecontainerapps.io",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "content-security-policy": "default-src https:; connect-src 'self' https://scoreboard-api.greenwave-01782167.westus2.azurecontainerapps.io; script-src 'self'; object-src 'none'"
   },
   "mimeTypes": {
