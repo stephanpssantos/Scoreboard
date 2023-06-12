@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpLogging;
 using Scoreboard.Shared;
 
 namespace Scoreboard.API
@@ -27,6 +28,13 @@ namespace Scoreboard.API
             builder.Services.AddHostedService<DbInitializer>();
             builder.Services.AddControllers();
 
+            builder.Services.AddHttpLogging(options =>
+            {
+                options.LoggingFields = HttpLoggingFields.All;
+                options.RequestBodyLogLimit = 4096; // default is 32k
+                options.ResponseBodyLogLimit = 4096; // default is 32k
+            });
+
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -43,6 +51,8 @@ namespace Scoreboard.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseHttpLogging();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
